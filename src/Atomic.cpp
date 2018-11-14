@@ -3,7 +3,7 @@
 
 namespace baseline {
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
 
 int32_t atomic_inc( int32_t* ptr )
 {
