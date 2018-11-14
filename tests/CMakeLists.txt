@@ -1,4 +1,5 @@
 
+enable_testing()
 
 add_executable(MathTests MathTests.cpp)
 target_link_libraries(MathTests baseline)

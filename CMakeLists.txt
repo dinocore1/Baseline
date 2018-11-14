@@ -1,6 +1,8 @@
-cmake_minimum_required(VERSION 2.95)
+cmake_minimum_required(VERSION 3.1)
 
 project(baseline)
+
+set (CMAKE_CXX_STANDARD 11)
 
 option(BUILD_TESTS "Build unit tests" ON)
 
