@@ -16,7 +16,7 @@ file(GLOB Baseline_SRCS src/*.cpp)
 add_library(baseline ${Baseline_SRCS})
 
 install(TARGETS baseline DESTINATION lib)
-install(DIRECTORY include DESTINATION include)
+install(DIRECTORY include/baseline DESTINATION include)
 
 if(BUILD_TESTS)
   add_subdirectory(tests)
