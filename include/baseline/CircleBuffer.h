@@ -10,7 +10,9 @@ namespace baseline {
    ~CircleBuffer();
 
    inline int size() const;
+   inline int available() const;
    void put(const T&);
+   int put(T* buf, int len);
    T get();
 
   private:
@@ -44,6 +46,12 @@ namespace baseline {
   }
 
   template<typename T>
+  int CircleBuffer<T>::available() const
+  {
+      return mMaxSize - mSize;
+  }
+
+  template<typename T>
   void CircleBuffer<T>::put(const T& v)
   {
     if (mSize < mMaxSize) {
@@ -51,6 +59,20 @@ namespace baseline {
       mTail = (mTail + 1) % mMaxSize;
       mSize++;
     }
+  }
+
+  template<typename T>
+  int CircleBuffer<T>::put(T* buf, int len)
+  {
+      len = MIN(len, available());
+      len = MIN(len, mMaxSize - mTail);
+
+      for(int i=0;i<len;i++) {
+          mBuffer[mTail + i] = buf[i];
+      }
+      mTail = (mTail + len) % mMaxSize;
+      mSize += len;
+      return len;
   }
 
   template<typename T>
