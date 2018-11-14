@@ -3,6 +3,8 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <cstdlib>
+#include <cstring>
 
 #ifndef MIN
   #define MIN(a, b) ((a) < (b) ? (a) : (b))
