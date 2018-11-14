@@ -100,6 +100,23 @@ TEST_CASE("compute population std div", "[math]") {
 
 }
 
+TEST_CASE("storeless stat", "[math]") {
+    StorelessStatsF var(false);
+
+    REQUIRE( var.getN() == 0);
+    REQUIRE( var.isBiasCorrected() == false );
+
+    var.increment(1.0f);
+    var.increment(3.0);
+    var.increment(5.0);
+    var.increment(5.0);
+
+    REQUIRE( var.getN() == 4);
+    REQUIRE( var.getMean() == Approx(3.5f));
+    REQUIRE( var.getStdDiv() == Approx(1.65831f));
+
+}
+
 TEST_CASE("linear function", "[math]") {
     LinearFunctionf f = LinearFunctionf::createFromPoints({2, 2}, {4, 7});
 

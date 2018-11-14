@@ -10,8 +10,8 @@ public:
   FirstMoment();
   void increment( T v );
   void clear();
-  int getN();
-  T getResult();
+  int getN() const;
+  T getResult() const;
 
 protected:
   T m1;
@@ -28,8 +28,8 @@ public:
   SecondMoment();
   void increment( T v );
   void clear();
-  int getN();
-  T getResult();
+  int getN() const;
+  T getResult() const;
 
 protected:
   T m2;
@@ -64,12 +64,12 @@ class Variance
 public:
   Variance( bool biasCorrected = true );
 
-  bool isBiasCorrected();
+  bool isBiasCorrected() const;
 
   void increment( T v );
   void clear();
-  int getN();
-  T getResult();
+  int getN() const;
+  T getResult() const;
 
 private:
   SecondMoment<T> moment;
@@ -82,7 +82,7 @@ class StandardDiviation : public Variance<T>
 public:
   StandardDiviation( bool biasCorrected = true );
 
-  T getResult();
+  T getResult() const;
 
 };
 
@@ -92,12 +92,13 @@ class StorelessStats
 public:
   StorelessStats( bool biasCorrected = true );
 
+  bool isBiasCorrected() const;
   void increment( T v );
   void clear();
-  int getN();
+  int getN() const;
 
-  T getMean();
-  T getStdDiv();
+  T getMean() const;
+  T getStdDiv() const;
 
 private:
   FirstMoment<T> mMean;

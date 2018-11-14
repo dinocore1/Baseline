@@ -40,13 +40,13 @@ void FirstMoment<T>::increment( T v )
 }
 
 template<typename T>
-int FirstMoment<T>::getN()
+int FirstMoment<T>::getN() const
 {
   return mN;
 }
 
 template<typename T>
-T FirstMoment<T>::getResult()
+T FirstMoment<T>::getResult() const
 {
   return m1;
 }
@@ -74,7 +74,7 @@ void SecondMoment<T>::clear()
 }
 
 template<typename T>
-int SecondMoment<T>::getN()
+int SecondMoment<T>::getN() const
 {
   return FirstMoment<T>::mN;
 }
@@ -91,7 +91,7 @@ void SecondMoment<T>::increment( T v )
 }
 
 template<typename T>
-T SecondMoment<T>::getResult()
+T SecondMoment<T>::getResult() const
 {
   return m2;
 }
@@ -112,7 +112,7 @@ Variance<T>::Variance( bool biasCorrected )
 }
 
 template<typename T>
-bool Variance<T>::isBiasCorrected()
+bool Variance<T>::isBiasCorrected() const
 {
   return mIsBiasCorrected;
 }
@@ -130,13 +130,13 @@ void Variance<T>::clear()
 }
 
 template<typename T>
-int Variance<T>::getN()
+int Variance<T>::getN() const
 {
   return moment.getN();
 }
 
 template<typename T>
-T Variance<T>::getResult()
+T Variance<T>::getResult() const
 {
   const int n = moment.getN();
   if( n == 0 ) {
@@ -169,7 +169,7 @@ StandardDiviation<T>::StandardDiviation( bool biasCorrected )
 }
 
 template<typename T>
-T StandardDiviation<T>::getResult()
+T StandardDiviation<T>::getResult() const
 {
   T value = Variance<T>::getResult();
   return std::sqrt( value );
@@ -192,6 +192,12 @@ StorelessStats<T>::StorelessStats( bool biasCorrected )
 }
 
 template<typename T>
+bool StorelessStats<T>::isBiasCorrected() const
+{
+  return mStdDiv.isBiasCorrected();
+}
+
+template<typename T>
 void StorelessStats<T>::increment( T v )
 {
   mMean.increment( v );
@@ -206,19 +212,19 @@ void StorelessStats<T>::clear()
 }
 
 template<typename T>
-int StorelessStats<T>::getN()
+int StorelessStats<T>::getN() const
 {
   return mMean.getN();
 }
 
 template<typename T>
-T StorelessStats<T>::getMean()
+T StorelessStats<T>::getMean() const
 {
   return mMean.getResult();
 }
 
 template<typename T>
-T StorelessStats<T>::getStdDiv()
+T StorelessStats<T>::getStdDiv() const
 {
   return mStdDiv.getResult();
 }
