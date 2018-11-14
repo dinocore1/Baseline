@@ -4,8 +4,7 @@
 #include <limits>
 #include <cmath>
 
-namespace baseline
-{
+namespace baseline {
 
 
 ///////////// FirstMoment ///////////////////
@@ -27,10 +26,10 @@ void FirstMoment<T>::clear()
 }
 
 template<typename T>
-void FirstMoment<T>::increment(T v)
+void FirstMoment<T>::increment( T v )
 {
 
-  if(mN == 0) {
+  if( mN == 0 ) {
     m1 = 0.0;
   }
   mN++;
@@ -81,14 +80,14 @@ int SecondMoment<T>::getN()
 }
 
 template<typename T>
-void SecondMoment<T>::increment(T v)
+void SecondMoment<T>::increment( T v )
 {
-  if(FirstMoment<T>::mN < 1) {
+  if( FirstMoment<T>::mN < 1 ) {
     FirstMoment<T>::m1 = m2 = 0.0;
   }
 
-  FirstMoment<T>::increment(v);
-  m2 += (FirstMoment<T>::mN - 1) * FirstMoment<T>::mDev * FirstMoment<T>::mNDev;
+  FirstMoment<T>::increment( v );
+  m2 += ( FirstMoment<T>::mN - 1 ) * FirstMoment<T>::mDev * FirstMoment<T>::mNDev;
 }
 
 template<typename T>
@@ -107,8 +106,8 @@ class SecondMoment<double>;
 //////////////// Variance /////////////////
 
 template<typename T>
-Variance<T>::Variance(bool biasCorrected)
-  : mIsBiasCorrected(biasCorrected)
+Variance<T>::Variance( bool biasCorrected )
+  : mIsBiasCorrected( biasCorrected )
 {
 }
 
@@ -119,9 +118,9 @@ bool Variance<T>::isBiasCorrected()
 }
 
 template<typename T>
-void Variance<T>::increment(T v)
+void Variance<T>::increment( T v )
 {
-  moment.increment(v);
+  moment.increment( v );
 }
 
 template<typename T>
@@ -140,16 +139,16 @@ template<typename T>
 T Variance<T>::getResult()
 {
   const int n = moment.getN();
-  if(n == 0) {
+  if( n == 0 ) {
     return std::numeric_limits<T>::quiet_NaN();
-  } else if(n == 1) {
+  } else if( n == 1 ) {
     return 0.0;
   } else {
     T m2 = moment.getResult();
-    if(mIsBiasCorrected) {
-      return m2 / (n - 1);
+    if( mIsBiasCorrected ) {
+      return m2 / ( n - 1 );
     } else {
-      return m2 / (n);
+      return m2 / ( n );
     }
   }
 }
@@ -164,8 +163,8 @@ class Variance<double>;
 //////////////// StandardDiviation //////////////////
 
 template<typename T>
-StandardDiviation<T>::StandardDiviation(bool biasCorrected)
-  : Variance<T>(biasCorrected)
+StandardDiviation<T>::StandardDiviation( bool biasCorrected )
+  : Variance<T>( biasCorrected )
 {
 }
 
@@ -173,7 +172,7 @@ template<typename T>
 T StandardDiviation<T>::getResult()
 {
   T value = Variance<T>::getResult();
-  return std::sqrt(value);
+  return std::sqrt( value );
 }
 
 
@@ -187,16 +186,16 @@ class StandardDiviation<double>;
 /////////// StorelessStats ///////////////////
 
 template<typename T>
-StorelessStats<T>::StorelessStats(bool biasCorrected)
-  : mStdDiv(biasCorrected)
+StorelessStats<T>::StorelessStats( bool biasCorrected )
+  : mStdDiv( biasCorrected )
 {
 }
 
 template<typename T>
-void StorelessStats<T>::increment(T v)
+void StorelessStats<T>::increment( T v )
 {
-  mMean.increment(v);
-  mStdDiv.increment(v);
+  mMean.increment( v );
+  mStdDiv.increment( v );
 }
 
 template<typename T>
@@ -231,18 +230,18 @@ template
 class StorelessStats<double>;
 
 template<typename T>
-LinearFunction<T> LinearFunction<T>::createFromPoints(const Vec2<T>& a, const Vec2<T>& b)
+LinearFunction<T> LinearFunction<T>::createFromPoints( const Vec2<T>& a, const Vec2<T>& b )
 {
   LinearFunction<T> retval;
 
-  retval.mM = (a[1] - b[1]) / (a[0] - b[0]);
+  retval.mM = ( a[1] - b[1] ) / ( a[0] - b[0] );
   retval.mB = a[1] - a[0] * retval.mM;
 
   return retval;
 }
 
 template<typename T>
-T LinearFunction<T>::operator()(const T& input)
+T LinearFunction<T>::operator()( const T& input )
 {
   return input * mM + mB;
 }
@@ -266,11 +265,11 @@ template
 class LinearFunction<double>;
 
 template<typename T>
-const T& clamp(const T& v, const T& lo, const T& hi)
+const T& clamp( const T& v, const T& lo, const T& hi )
 {
-  if(v < lo) {
+  if( v < lo ) {
     return lo;
-  } else if(v > hi) {
+  } else if( v > hi ) {
     return hi;
   } else {
     return v;
@@ -278,15 +277,15 @@ const T& clamp(const T& v, const T& lo, const T& hi)
 }
 
 template
-const float& clamp(const float&, const float&, const float&);
+const float& clamp( const float&, const float&, const float& );
 
 template
-const double& clamp(const double&, const double&, const double&);
+const double& clamp( const double&, const double&, const double& );
 
 template
-const int& clamp(const int&, const int&, const int&);
+const int& clamp( const int&, const int&, const int& );
 
 template
-const uint16_t& clamp(const uint16_t&, const uint16_t&, const uint16_t&);
+const uint16_t& clamp( const uint16_t&, const uint16_t&, const uint16_t& );
 
 } // namespace
