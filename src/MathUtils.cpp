@@ -33,9 +33,8 @@ void FirstMoment<T>::increment(T v)
         m1 = 0.0;
     }
     mN++;
-    T n0 = mN;
     mDev = v - m1;
-    mNDev = mDev / n0;
+    mNDev = mDev / mN;
     m1 += mNDev;
 
 }
@@ -147,7 +146,7 @@ T Variance<T>::getResult()
     } else {
         T m2 = moment.getResult();
         if (mIsBiasCorrected) {
-            return m2 / (n - 1.0);
+            return m2 / (n - 1);
         } else {
             return m2 / (n);
         }
