@@ -12,3 +12,7 @@ add_test(IOTests IOTests)
 add_executable(VectorTests VectorTests.cpp)
 target_link_libraries(VectorTests baseline)
 add_test(VectorTests VectorTests)
+
+add_executable(PointerTests PointerTests.cpp)
+target_link_libraries(PointerTests baseline)
+add_test(PointerTests PointerTests)
