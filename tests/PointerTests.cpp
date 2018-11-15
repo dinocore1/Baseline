@@ -13,7 +13,7 @@ TEST_CASE( "strong pointer", "[StrongPointer]" )
 #define USE         0x02
 
   struct MyStruct : public RefBase {
-    MyStruct(uint8_t& status)
+    MyStruct( uint8_t& status )
       : mStatus( status )
     {}
 
@@ -31,11 +31,11 @@ TEST_CASE( "strong pointer", "[StrongPointer]" )
   uint8_t status = 0;
 
   {
-    sp<MyStruct> p1( new MyStruct(status) );
+    sp<MyStruct> p1( new MyStruct( status ) );
     p1->use();
   }
 
-  REQUIRE(status == (DESTRUCTOR | USE));
+  REQUIRE( status == ( DESTRUCTOR | USE ) );
 
 
 }

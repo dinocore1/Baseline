@@ -16,6 +16,18 @@
   #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #endif
 
+#ifdef WIN32
+  /* Define the default path separator for the platform. */
+  #define OS_PATH_SEPARATOR     '\\'
+  #define OS_PATH_SEPARATOR_STR "\\"
+
+#else
+  /* Define the default path separator for the platform. */
+  #define OS_PATH_SEPARATOR     '/'
+  #define OS_PATH_SEPARATOR_STR "/"
+
+#endif
+
 namespace baseline {
 
 typedef int32_t status_t;
