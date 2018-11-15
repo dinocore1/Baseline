@@ -2,7 +2,9 @@
 #include "catch.hpp"
 
 #include <baseline/Baseline.h>
+#include <baseline/StrongPointer.h>
 #include <baseline/RefBase.h>
+#include <baseline/UniquePointer.h>
 
 using namespace baseline;
 
@@ -38,4 +40,100 @@ TEST_CASE( "strong pointer", "[StrongPointer]" )
   REQUIRE( status == ( DESTRUCTOR | USE ) );
 
 
+}
+
+TEST_CASE( "does free single obj?", "[UniquePointer]" )
+{
+  static int count = 0;
+
+  struct MyObj {
+    MyObj( ) {
+      count++;
+    }
+
+    ~MyObj() {
+      count--;
+    }
+  };
+
+  {
+    up<MyObj> myptr( new MyObj );
+    REQUIRE( count == 1 );
+  }
+
+  REQUIRE( count == 0 );
+}
+
+TEST_CASE( "does release work?", "[UniquePointer]" )
+{
+  static int count = 0;
+
+  struct MyObj {
+    MyObj( ) {
+      count++;
+    }
+
+    ~MyObj() {
+      count--;
+    }
+  };
+
+  MyObj* rawC;
+  {
+    up<MyObj> c( new MyObj );
+    assert( count == 1 );
+    rawC = c.release();
+  }
+  assert( count == 1 );
+  delete rawC;
+}
+
+TEST_CASE( "does free array?", "[UniquePointer]" )
+{
+  static int count = 0;
+
+  struct MyObj {
+    MyObj( ) {
+      count++;
+    }
+
+    ~MyObj() {
+      count--;
+    }
+  };
+
+
+  {
+    up<MyObj[]> myptr( new MyObj[4] );
+    REQUIRE( count == 4 );
+  }
+
+  REQUIRE( count == 0 );
+}
+
+TEST_CASE( "does release array work?", "[UniquePointer]" )
+{
+  static int count = 0;
+
+  struct MyObj {
+    MyObj( ) {
+      count++;
+    }
+
+    ~MyObj() {
+      count--;
+    }
+  };
+
+
+  MyObj* raw;
+  {
+    up<MyObj[]> myptr( new MyObj[4] );
+    REQUIRE( count == 4 );
+    raw = myptr.release();
+
+  }
+
+  REQUIRE( count == 4 );
+  delete[] raw;
 }

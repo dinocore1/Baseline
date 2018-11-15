@@ -74,3 +74,21 @@ TEST_CASE( "non-trivial sorted vector", "[SortedVector]" )
   REQUIRE( vector.size() == 2 );
   REQUIRE( ( vector[0].mKey == 2 && vector[0].mValue == 11.2f ) );
 }
+
+TEST_CASE( "vector of pointers", "[Vector]" )
+{
+  struct MyStruct {
+    char mWhateve;
+
+    virtual void* test() = 0;
+  };
+
+  struct MyStruct2 : public MyStruct {
+    void* test() {
+
+    }
+  };
+
+  Vector<MyStruct*> vector;
+  vector.add( new MyStruct2 );
+}
