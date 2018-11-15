@@ -3,6 +3,7 @@
 
 #include <baseline/Baseline.h>
 #include <baseline/Vector.h>
+#include <baseline/SortedVector.h>
 
 using namespace baseline;
 
@@ -41,4 +42,35 @@ TEST_CASE( "copy on write", "[Vector]" )
   // make sure the content of both vectors are correct
   REQUIRE( vector[3] == 4 );
   REQUIRE( other[3] == 5 );
+}
+
+TEST_CASE( "trivial sorted vector", "[SortedVector]" )
+{
+  SortedVector<int> vector;
+  vector.add( 2 );
+  vector.add( 1 );
+
+  REQUIRE( vector.size() == 2 );
+  REQUIRE( vector[0] == 1 );
+  REQUIRE( vector[1] == 2 );
+}
+
+TEST_CASE( "non-trivial sorted vector", "[SortedVector]" )
+{
+  struct MyStruct {
+    char mKey;
+    float mValue;
+
+    bool operator< ( const MyStruct& rhs ) const {
+      return mKey < rhs.mKey;
+    }
+
+  };
+
+  SortedVector<MyStruct> vector;
+  vector.add( {4, 3.14f} );
+  vector.add( {2, 11.2f} );
+
+  REQUIRE( vector.size() == 2 );
+  REQUIRE( ( vector[0].mKey == 2 && vector[0].mValue == 11.2f ) );
 }
