@@ -7,9 +7,9 @@
 #include <cstring>
 #include <errno.h>
 
-#define BASELINE_VERSION_MAJOR 0
-#define BASELINE_VERSION_MINOR 1
-/* #undef BASELINE_THREAD_SUPPORT */
+#define BASELINE_VERSION_MAJOR @Baseline_VERSION_MAJOR@
+#define BASELINE_VERSION_MINOR @Baseline_VERSION_MINOR@
+#cmakedefine BASELINE_THREAD_SUPPORT
 
 #ifndef MIN
   #define MIN(a, b) ((a) < (b) ? (a) : (b))

@@ -1,0 +1,2 @@
+
+#define CMAKE_USE_PTHREADS_INIT
