@@ -30,6 +30,14 @@
 
 namespace baseline {
 
+template<class T>
+void swap( T& a, T& b )
+{
+  T c( a );
+  a = b;
+  b = c;
+}
+
 typedef int32_t status_t;
 enum {
   OK                = 0,    // Everything's swell.
@@ -63,6 +71,8 @@ enum {
 #endif
   FDS_NOT_ALLOWED     = 0x80000007,
 };
+
+
 }
 
 #include <baseline/Log.h>

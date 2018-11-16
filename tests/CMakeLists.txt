@@ -16,3 +16,7 @@ add_test(VectorTests VectorTests)
 add_executable(PointerTests PointerTests.cpp)
 target_link_libraries(PointerTests baseline)
 add_test(PointerTests PointerTests)
+
+add_executable(TypeHelperTests TypeHelperTests.cpp)
+target_link_libraries(TypeHelperTests baseline)
+add_test(TypeHelperTests TypeHelperTests)
