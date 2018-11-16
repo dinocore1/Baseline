@@ -1,2 +1,3 @@
 
 #cmakedefine CMAKE_USE_PTHREADS_INIT
+#cmakedefine CMAKE_USE_WIN32_THREADS_INIT

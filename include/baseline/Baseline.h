@@ -9,7 +9,7 @@
 
 #define BASELINE_VERSION_MAJOR 0
 #define BASELINE_VERSION_MINOR 1
-/* #undef BASELINE_THREAD_SUPPORT */
+#define BASELINE_THREAD_SUPPORT
 
 #ifndef MIN
   #define MIN(a, b) ((a) < (b) ? (a) : (b))

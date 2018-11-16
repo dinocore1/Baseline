@@ -20,3 +20,7 @@ add_test(PointerTests PointerTests)
 add_executable(TypeHelperTests TypeHelperTests.cpp)
 target_link_libraries(TypeHelperTests baseline)
 add_test(TypeHelperTests TypeHelperTests)
+
+add_executable(ThreadTests ThreadTests.cpp)
+target_link_libraries(ThreadTests baseline)
+add_test(ThreadTests ThreadTests)

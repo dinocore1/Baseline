@@ -4,7 +4,7 @@ project(baseline)
 
 set (CMAKE_CXX_STANDARD 11)
 
-option(THREAD_SUPPORT "Build with thread support" OFF)
+option(THREAD_SUPPORT "Build with thread support" ON)
 option(BUILD_TESTS "Build unit tests" ON)
 
 set(Baseline_VERSION_MAJOR 0)
@@ -30,9 +30,34 @@ configure_file (
 
 include_directories(src include ${PROJECT_BINARY_DIR}/include)
 
-file(GLOB Baseline_SRCS src/*.cpp)
+list(APPEND Baseline_SRCS
+  src/Atomic.cpp
+  src/Debug.cpp
+  src/MathUtils.cpp
+  src/RefBase.cpp
+  src/SharedBuffer.cpp
+  src/Static.cpp
+  src/String8.cpp
+  src/String16.cpp
+  src/TextOutput.cpp
+  src/Unicode.cpp
+  src/VectorImpl.cpp
+)
+
+if(BASELINE_THREAD_SUPPORT)
+  list(APPEND Baseline_SRCS
+    src/Condition.cpp
+    src/Thread.cpp
+    src/Mutex.cpp
+  )
+endif()
+
 
 add_library(baseline ${Baseline_SRCS})
+
+if(BASELINE_THREAD_SUPPORT)
+  target_link_libraries(baseline Threads::Threads)
+endif()
 
 install(TARGETS baseline DESTINATION lib)
 install(DIRECTORY include/baseline DESTINATION include)

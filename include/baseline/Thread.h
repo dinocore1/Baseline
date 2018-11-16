@@ -1,16 +1,22 @@
 #ifndef THREADS_H_
 #define THREADS_H_
 
+#include <baseline/RefBase.h>
+
 namespace baseline {
 
-class Thread
+class Thread : public RefBase
 {
 public:
+  Thread();
   virtual ~Thread();
   virtual void run() = 0;
 
-  void start();
-  void join();
+  status_t start();
+  status_t join();
+
+private:
+  void* mData;
 };
 
 }
