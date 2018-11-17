@@ -10,6 +10,8 @@
 #define BASELINE_VERSION_MAJOR @Baseline_VERSION_MAJOR@
 #define BASELINE_VERSION_MINOR @Baseline_VERSION_MINOR@
 #cmakedefine BASELINE_THREAD_SUPPORT
+#cmakedefine CMAKE_USE_PTHREADS_INIT
+#cmakedefine CMAKE_USE_WIN32_THREADS_INIT
 
 #ifndef MIN
   #define MIN(a, b) ((a) < (b) ? (a) : (b))
