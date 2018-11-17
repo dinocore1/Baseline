@@ -1,4 +1,10 @@
 #include <stddef.h>
+#include <cstddef>
+#include <cstdint>
+
+#ifdef WIN32
+#include <Winsock2.h>
+#endif
 
 #ifdef HAVE_WINSOCK
   #undef  nhtol
@@ -164,7 +170,7 @@ extern "C" {
     return ret;
   }
 
-  ssize_t utf32_to_utf8_length( const char32_t* src, size_t src_len )
+  int utf32_to_utf8_length( const char32_t* src, size_t src_len )
   {
     if( src == NULL || src_len == 0 ) {
       return -1;
@@ -354,7 +360,7 @@ extern "C" {
 // UTF-8
 // --------------------------------------------------------------------------
 
-  ssize_t utf8_length( const char* src )
+  int utf8_length( const char* src )
   {
     const char* cur = src;
     size_t ret = 0;
@@ -397,7 +403,7 @@ extern "C" {
     return ret;
   }
 
-  ssize_t utf16_to_utf8_length( const char16_t* src, size_t src_len )
+  int utf16_to_utf8_length( const char16_t* src, size_t src_len )
   {
     if( src == NULL || src_len == 0 ) {
       return -1;
@@ -509,7 +515,7 @@ extern "C" {
     //printf("Char at %p: len=%d, utf-16=%p\n", src, length, (void*)result);
   }
 
-  ssize_t utf8_to_utf16_length( const uint8_t* u8str, size_t u8len )
+  int utf8_to_utf16_length( const uint8_t* u8str, size_t u8len )
   {
     const uint8_t* const u8end = u8str + u8len;
     const uint8_t* u8cur = u8str;

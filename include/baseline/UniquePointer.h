@@ -55,7 +55,11 @@ public:
 
   // Returns the raw pointer and hands over ownership to the caller.
   // The pointer will not be deleted by UniquePtr.
-  T* release() __attribute__( ( warn_unused_result ) ) {
+  T* release()
+#if defined(__GNUC__) || defined(__clang__)
+    __attribute__( ( warn_unused_result ) )
+#endif
+  {
     T* result = mPtr;
     mPtr = NULL;
     return result;
@@ -104,7 +108,11 @@ public:
     return mPtr;
   }
 
-  T* release() __attribute__( ( warn_unused_result ) ) {
+  T* release() 
+#if defined(__GNUC__) || defined(__clang__)
+    __attribute__( ( warn_unused_result ) )
+#endif
+  {
     T* result = mPtr;
     mPtr = NULL;
     return result;

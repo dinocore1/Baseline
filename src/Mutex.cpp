@@ -10,7 +10,9 @@ Mutex::~Mutex()
 {}
 
 status_t Mutex::lock()
-{}
+{
+  return UNKNOWN_ERROR;
+}
 
 void Mutex::unlock()
 {}

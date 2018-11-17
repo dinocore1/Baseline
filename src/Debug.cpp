@@ -12,7 +12,7 @@ static const char indentStr[] =
 
 const char* stringForIndent( int32_t indentLevel )
 {
-  ssize_t off = sizeof( indentStr ) - 1 - ( indentLevel * 2 );
+  int off = sizeof( indentStr ) - 1 - ( indentLevel * 2 );
   return indentStr + ( off < 0 ? 0 : off );
 }
 
@@ -249,7 +249,7 @@ void printHexData( int32_t indent, const void* buf, size_t length,
       const ssize_t dir = -1;
 #else
       const size_t startIndex = word;
-      const ssize_t dir = 1;
+      const int dir = 1;
 #endif
 
       for( index = 0; index < alignment || ( alignment == 0 && index < bytesPerLine ); index++ ) {

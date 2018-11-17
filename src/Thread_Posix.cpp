@@ -6,7 +6,12 @@
 #include <baseline/Condition.h>
 #include <baseline/Thread.h>
 
+#if defined(CMAKE_USE_PTHREADS_INIT)
 #include <pthread.h>
+#elif defined(CMAKE_USE_WIN32_THREADS_INIT)
+#include <windows.h>
+#include <process.h>
+#endif
 
 namespace baseline {
 
@@ -19,9 +24,9 @@ struct ThreadData {
   bool mRunning;
   Mutex mLock;
   Condition mThreadExitedCondition;
-#ifdef CMAKE_USE_PTHREADS_INIT
+#if defined(CMAKE_USE_PTHREADS_INIT)
   pthread_t threadId;
-#elif CMAKE_USE_WIN32_THREADS_INIT
+#elif defined(CMAKE_USE_WIN32_THREADS_INIT)
   unsigned threadId;
 #endif
 };
@@ -69,14 +74,14 @@ status_t Thread::start()
 {
   ThreadData* data = static_cast<ThreadData*>( mData );
 
-#ifdef CMAKE_USE_PTHREADS_INIT
+#if defined(CMAKE_USE_PTHREADS_INIT)
 
   pthread_attr_t attr;
   pthread_attr_init( &attr );
   pthread_attr_setdetachstate( &attr, PTHREAD_CREATE_DETACHED );
   pthread_create( &data->threadId, &attr, trampoline, data );
 
-#elif CMAKE_USE_WIN32_THREADS_INIT
+#elif defined(CMAKE_USE_WIN32_THREADS_INIT)
 
   _beginthreadex( NULL, 0, trampoline, data, &data->threadId );
 

@@ -41,6 +41,11 @@ void swap( T& a, T& b )
   b = c;
 }
 
+#ifdef WIN32
+// Windows defines NO_ERROR so we temporally undef
+#undef NO_ERROR
+#endif
+
 typedef int32_t status_t;
 enum {
   OK                = 0,    // Everything's swell.
@@ -75,6 +80,9 @@ enum {
   FDS_NOT_ALLOWED     = 0x80000007,
 };
 
+#ifdef WIN32
+#define NO_ERROR 0L
+#endif
 
 }
 

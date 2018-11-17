@@ -50,8 +50,8 @@ public:
   status_t            insert( size_t pos,
                               const char16_t* chrs, size_t len );
 
-  ssize_t             findFirst( char16_t c ) const;
-  ssize_t             findLast( char16_t c ) const;
+  int             findFirst( char16_t c ) const;
+  int             findLast( char16_t c ) const;
 
   bool                startsWith( const String16& prefix ) const;
   bool                startsWith( const char16_t* prefix ) const;
