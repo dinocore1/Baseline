@@ -35,7 +35,7 @@ private:
   Mutex( const Mutex& );
   Mutex& operator = ( const Mutex& );
 
-  void* mData;
+  mutex_t mMutex;
 };
 
 }

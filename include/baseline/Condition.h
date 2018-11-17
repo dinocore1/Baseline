@@ -8,6 +8,9 @@ namespace baseline {
 class Condition
 {
 public:
+  Condition();
+  ~Condition();
+
   status_t wait( Mutex& mutex );
 //status_t waitRelative(Mutex& mutex, nsecs_t reltime);
 
@@ -22,7 +25,7 @@ public:
   void signalAll();
 
 private:
-  void* mData;
+  condition_t mVar;
 
 };
 

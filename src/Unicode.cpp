@@ -6,7 +6,7 @@
 #include <Winsock2.h>
 #endif
 
-#ifdef HAVE_WINSOCK
+#ifdef WIN32
   #undef  nhtol
   #undef  htonl
   #undef  nhtos

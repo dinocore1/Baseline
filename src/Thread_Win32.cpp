@@ -1,13 +1,8 @@
-#include <baseline/Baseline.h>
-
 #include "Private.h"
-
+#include <baseline/Baseline.h>
 #include <baseline/Mutex.h>
 #include <baseline/Condition.h>
 #include <baseline/Thread.h>
-
-#include <windows.h>
-#include <process.h>
 
 namespace baseline {
 
