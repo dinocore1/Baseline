@@ -25,11 +25,7 @@ struct ThreadData {
   bool mRunning;
   Mutex mLock;
   Condition mThreadExitedCondition;
-#if defined(CMAKE_USE_PTHREADS_INIT)
-  pthread_t threadId;
-#elif defined(CMAKE_USE_WIN32_THREADS_INIT)
-  unsigned threadId;
-#endif
+  thread_t mThreadId;
 };
 
 inline ThreadData* toThreadData( void* prt )
@@ -80,11 +76,11 @@ status_t Thread::start()
   pthread_attr_t attr;
   pthread_attr_init( &attr );
   pthread_attr_setdetachstate( &attr, PTHREAD_CREATE_DETACHED );
-  pthread_create( &data->threadId, &attr, trampoline, data );
+  pthread_create( &data->mThreadId, &attr, trampoline, data );
 
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
 
-  _beginthreadex( NULL, 0, trampoline, data, NULL, &data->threadId );
+  _beginthreadex( NULL, 0, trampoline, data, NULL, &data->mThreadId);
 
 #endif
 
