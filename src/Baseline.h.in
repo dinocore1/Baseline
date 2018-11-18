@@ -3,8 +3,8 @@
 
 
 #ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+  #define WIN32_LEAN_AND_MEAN
+  #include <windows.h>
 #endif
 
 #include <cstddef>
@@ -42,17 +42,15 @@
 
 namespace baseline {
 
-
-#if defined(CMAKE_USE_PTHREADS_INIT)
-#include <pthread.h>
-typedef pthread_mutex_t mutex_t;
-typedef pthread_cond_t condition_t;
-
-#elif defined(CMAKE_USE_WIN32_THREADS_INIT)
-typedef CRITICAL_SECTION mutex_t;
-typedef CONDITION_VARIABLE condition_t;
-
-
+#if defined(BASELINE_THREAD_SUPPORT)
+  #if defined(CMAKE_USE_PTHREADS_INIT)
+    #include <pthread.h>
+    typedef pthread_mutex_t mutex_t;
+    typedef pthread_cond_t condition_t;
+  #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
+    typedef CRITICAL_SECTION mutex_t;
+    typedef CONDITION_VARIABLE condition_t;
+  #endif
 #endif
 
 template<class T>
@@ -64,7 +62,7 @@ void swap( T& a, T& b )
 }
 
 #ifdef WIN32
-#undef NO_ERROR
+  #undef NO_ERROR
 #endif
 
 typedef int32_t status_t;
@@ -102,7 +100,7 @@ enum {
 };
 
 #ifdef WIN32
-#define NO_ERROR 0L
+  #define NO_ERROR 0L
 #endif
 
 }
