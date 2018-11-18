@@ -17,7 +17,7 @@ namespace baseline {
 #if defined(CMAKE_USE_PTHREADS_INIT)
     pthread_cond_destroy(&mVar);
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
-    DeleteCriticalSection(&mVar);
+    
 #endif
   }
 status_t Condition::wait( Mutex& mutex )

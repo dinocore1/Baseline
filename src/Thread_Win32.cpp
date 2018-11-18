@@ -4,6 +4,8 @@
 #include <baseline/Condition.h>
 #include <baseline/Thread.h>
 
+#include <process.h>
+
 namespace baseline {
 
 

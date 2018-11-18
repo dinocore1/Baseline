@@ -47,14 +47,14 @@ list(APPEND Baseline_SRCS
 if(CMAKE_USE_PTHREADS_INIT)
   list(APPEND Baseline_SRCS
     src/Condition.cpp
-    src/Thread_Posix.cpp
     src/Mutex.cpp
+	src/Thread_Posix.cpp
   )
 elseif(CMAKE_USE_WIN32_THREADS_INIT)
   list(APPEND Baseline_SRCS
     src/Condition.cpp
+	src/Mutex.cpp
     src/Thread_Win32.cpp
-    src/Mutex.cpp
   )
 endif()
 
