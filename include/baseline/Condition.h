@@ -25,6 +25,11 @@ public:
   void signalAll();
 
 private:
+
+  //A Condition cannot be copied
+  Condition(const Condition&);
+  Condition& operator= (const Condition&);
+
   condition_t mVar;
 
 };
