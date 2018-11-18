@@ -23,11 +23,6 @@ configure_file (
   "${PROJECT_BINARY_DIR}/include/baseline/Baseline.h"
   )
 
-configure_file (
-  "${CMAKE_CURRENT_SOURCE_DIR}/src/Private.h.in"
-  "${PROJECT_BINARY_DIR}/include/Private.h"
-  )
-
 include_directories(src include ${PROJECT_BINARY_DIR}/include)
 
 list(APPEND Baseline_SRCS

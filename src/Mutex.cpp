@@ -1,5 +1,3 @@
-#include "Private.h"
-
 #include <baseline/Baseline.h>
 #include <baseline/Mutex.h>
 
