@@ -44,17 +44,11 @@ list(APPEND Baseline_SRCS
   src/VectorImpl.cpp
 )
 
-if(CMAKE_USE_PTHREADS_INIT)
+if(BASELINE_THREAD_SUPPORT)
   list(APPEND Baseline_SRCS
     src/Condition.cpp
     src/Mutex.cpp
-	src/Thread_Posix.cpp
-  )
-elseif(CMAKE_USE_WIN32_THREADS_INIT)
-  list(APPEND Baseline_SRCS
-    src/Condition.cpp
-	src/Mutex.cpp
-    src/Thread_Win32.cpp
+	src/Thread.cpp
   )
 endif()
 
