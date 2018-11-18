@@ -33,11 +33,7 @@ namespace baseline {
   static unsigned trampoline(void* data)
   {
     ThreadData* threadData = toThreadData(data);
-    threadData->mThread->incStrong(data);
-    {
-      Mutex::Autolock l(threadData->mLock);
-      threadData->mRunning = true;
-    }
+    
     threadData->mThread->run();
     {
       Mutex::Autolock l(threadData->mLock);
@@ -62,22 +58,23 @@ namespace baseline {
 
   status_t Thread::start()
   {
-    ThreadData* data = static_cast<ThreadData*>(mData);
-
+    incStrong(this);
+    ThreadData* data = toThreadData(mData);
+    data->mRunning = true;
     _beginthreadex(NULL, 0, trampoline, data, NULL, &data->threadId);
-
-
     return OK;
   }
 
   status_t Thread::join()
   {
+    incStrong(this);
     ThreadData* data = toThreadData(mData);
     Mutex::Autolock l(data->mLock);
     while (data->mRunning) {
       data->mThreadExitedCondition.wait(data->mLock);
     }
 
+    decStrong(this);
     return OK;
   }
 

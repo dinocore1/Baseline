@@ -1,6 +1,12 @@
 #ifndef BASELINE_H_
 #define BASELINE_H_
 
+
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
@@ -22,9 +28,6 @@
 #endif
 
 #ifdef WIN32
-
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 
   /* Define the default path separator for the platform. */
   #define OS_PATH_SEPARATOR     '\\'
@@ -49,9 +52,7 @@ typedef pthread_cond_t condition_t;
 typedef CRITICAL_SECTION mutex_t;
 typedef CONDITION_VARIABLE condition_t;
 
-#elif BASELINE_THREAD_SUPPORT
-typedef int mutex_t;
-typedef int condition_t
+
 #endif
 
 template<class T>

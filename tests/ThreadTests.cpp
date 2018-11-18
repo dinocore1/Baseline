@@ -24,6 +24,8 @@ TEST_CASE( "thread runs", "[Thread]" )
   t->start();
   t->join();
   REQUIRE(count == 1);
-  delete t;
+  
+  //no need to call delete, the thread will clean it self up when it finishes
+  //delete t;
 
 }
