@@ -10,7 +10,7 @@
 
 #if defined(CMAKE_USE_PTHREADS_INIT)
 #define TRAMPOLINE_RETURN_T void*
-#define TRAMPLOINE_RETURN return NULL;
+#define TRAMPOLINE_RETURN return NULL;
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
 #define TRAMPOLINE_RETURN_T unsigned
 #define TRAMPOLINE_RETURN return 0;
@@ -26,7 +26,11 @@ namespace baseline {
     bool mRunning;
     Mutex mLock;
     Condition mThreadExitedCondition;
+    #if defined(CMAKE_USE_PTHREADS_INIT)
+    pthread_t threadId;
+    #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
     unsigned threadId;
+    #endif
   };
 
   inline ThreadData* toThreadData(void* prt)

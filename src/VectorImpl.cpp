@@ -396,7 +396,7 @@ void VectorImpl::_shrink( size_t where, size_t amount )
 
   const size_t new_size = mCount - amount;
   if( new_size * 3 < capacity() ) {
-    const size_t new_capacity = max( kMinVectorCapacity, new_size * 2 );
+    const size_t new_capacity = MAX( kMinVectorCapacity, new_size * 2 );
 //        ALOGV("shrink vector %p, new_capacity=%d", this, (int)new_capacity);
     if( ( where == new_size ) &&
         ( mFlags & HAS_TRIVIAL_COPY ) &&

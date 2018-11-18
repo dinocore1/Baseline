@@ -90,5 +90,5 @@ TEST_CASE( "vector of pointers", "[Vector]" )
   };
 
   Vector<MyStruct*> vector;
-  vector.add( new MyStruct2 );
+  //vector.add( new MyStruct2 );
 }

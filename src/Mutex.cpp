@@ -8,7 +8,7 @@ namespace baseline {
 Mutex::Mutex()
 {
 #if defined(CMAKE_USE_PTHREADS_INIT)
-  pthread_mutex_init(&mMutex);
+  pthread_mutex_init(&mMutex, NULL);
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
   InitializeCriticalSection(&mMutex);
 #endif
