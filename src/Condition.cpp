@@ -5,27 +5,29 @@
 
 namespace baseline {
 
-  Condition::Condition() {
+Condition::Condition()
+{
 #if defined(CMAKE_USE_PTHREADS_INIT)
-    pthread_cond_init(&mVar, NULL);
+  pthread_cond_init( &mVar, NULL );
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
-    InitializeConditionVariable(&mVar);
+  InitializeConditionVariable( &mVar );
 #endif
-  }
+}
 
-  Condition::~Condition() {
+Condition::~Condition()
+{
 #if defined(CMAKE_USE_PTHREADS_INIT)
-    pthread_cond_destroy(&mVar);
+  pthread_cond_destroy( &mVar );
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
-    
+
 #endif
-  }
+}
 status_t Condition::wait( Mutex& mutex )
 {
 #if defined(CMAKE_USE_PTHREADS_INIT)
-  pthread_cond_wait(&mVar, &mutex.mMutex);
+  pthread_cond_wait( &mVar, &mutex.mMutex );
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
-  SleepConditionVariableCS(&mVar, &mutex.mMutex, INFINITE);
+  SleepConditionVariableCS( &mVar, &mutex.mMutex, INFINITE );
 #endif
 
   return OK;
@@ -34,9 +36,9 @@ status_t Condition::wait( Mutex& mutex )
 void Condition::signalOne()
 {
 #if defined(CMAKE_USE_PTHREADS_INIT)
-  pthread_cond_signal(&mVar);
+  pthread_cond_signal( &mVar );
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
-  WakeConditionVariable(&mVar);
+  WakeConditionVariable( &mVar );
 #endif
 
 }
@@ -44,9 +46,9 @@ void Condition::signalOne()
 void Condition::signalAll()
 {
 #if defined(CMAKE_USE_PTHREADS_INIT)
-  pthread_cond_broadcast(&mVar);
+  pthread_cond_broadcast( &mVar );
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
-  WakeAllConditionVariable(&mVar);
+  WakeAllConditionVariable( &mVar );
 #endif
 
 }

@@ -3,7 +3,7 @@
 #include <cstdint>
 
 #ifdef WIN32
-#include <Winsock2.h>
+  #include <Winsock2.h>
 #endif
 
 #ifdef WIN32

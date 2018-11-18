@@ -30,11 +30,11 @@ public:
 
   static inline const String8 empty();
 
-  static String8              format(const char* fmt, ...)
+  static String8              format( const char* fmt, ... )
 #if defined(__GNUC__) || defined(__clang__)
-    __attribute__((format(printf, 1, 2)))
+  __attribute__( ( format( printf, 1, 2 ) ) )
 #endif
-    ;
+  ;
 
   static String8              formatV( const char* fmt, va_list args );
 
@@ -59,11 +59,11 @@ public:
   status_t            append( const char* other );
   status_t            append( const char* other, size_t numChars );
 
-  status_t            appendFormat(const char* fmt, ...)
+  status_t            appendFormat( const char* fmt, ... )
 #if defined(__GNUC__) || defined(__clang__)
-    __attribute__((format(printf, 2, 3)))
+  __attribute__( ( format( printf, 2, 3 ) ) )
 #endif
-    ;
+  ;
 
   status_t            appendFormatV( const char* fmt, va_list args );
 

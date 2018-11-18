@@ -8,27 +8,27 @@ namespace baseline {
 Mutex::Mutex()
 {
 #if defined(CMAKE_USE_PTHREADS_INIT)
-  pthread_mutex_init(&mMutex, NULL);
+  pthread_mutex_init( &mMutex, NULL );
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
-  InitializeCriticalSection(&mMutex);
+  InitializeCriticalSection( &mMutex );
 #endif
 }
 
 Mutex::~Mutex()
 {
 #if defined(CMAKE_USE_PTHREADS_INIT)
-  pthread_mutex_destroy(&mMutex);
+  pthread_mutex_destroy( &mMutex );
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
-  DeleteCriticalSection(&mMutex);
+  DeleteCriticalSection( &mMutex );
 #endif
 }
 
 status_t Mutex::lock()
 {
 #if defined(CMAKE_USE_PTHREADS_INIT)
-  pthread_mutex_lock(&mMutex);
+  pthread_mutex_lock( &mMutex );
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
-  EnterCriticalSection(&mMutex);
+  EnterCriticalSection( &mMutex );
 #endif
 
   return OK;
@@ -37,9 +37,9 @@ status_t Mutex::lock()
 void Mutex::unlock()
 {
 #if defined(CMAKE_USE_PTHREADS_INIT)
-  pthread_mutex_unlock(&mMutex);
+  pthread_mutex_unlock( &mMutex );
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
-  LeaveCriticalSection(&mMutex);
+  LeaveCriticalSection( &mMutex );
 #endif
 }
 

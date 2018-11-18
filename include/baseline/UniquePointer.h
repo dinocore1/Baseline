@@ -57,7 +57,7 @@ public:
   // The pointer will not be deleted by UniquePtr.
   T* release()
 #if defined(__GNUC__) || defined(__clang__)
-    __attribute__( ( warn_unused_result ) )
+  __attribute__( ( warn_unused_result ) )
 #endif
   {
     T* result = mPtr;
@@ -108,9 +108,9 @@ public:
     return mPtr;
   }
 
-  T* release() 
+  T* release()
 #if defined(__GNUC__) || defined(__clang__)
-    __attribute__( ( warn_unused_result ) )
+  __attribute__( ( warn_unused_result ) )
 #endif
   {
     T* result = mPtr;

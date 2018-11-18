@@ -23,8 +23,8 @@ TEST_CASE( "thread runs", "[Thread]" )
   MyThread* t = new MyThread();
   t->start();
   t->join();
-  REQUIRE(count == 1);
-  
+  REQUIRE( count == 1 );
+
   //no need to call delete, the thread will clean it self up when it finishes
   //delete t;
 
