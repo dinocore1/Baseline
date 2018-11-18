@@ -8,11 +8,6 @@ namespace baseline {
 
 const size_t kMinVectorCapacity = 4;
 
-static inline size_t max( size_t a, size_t b )
-{
-  return a > b ? a : b;
-}
-
 // ----------------------------------------------------------------------------
 
 VectorImpl::VectorImpl( size_t itemSize, uint32_t flags )
@@ -348,7 +343,7 @@ void* VectorImpl::_grow( size_t where, size_t amount )
 
   const size_t new_size = mCount + amount;
   if( capacity() < new_size ) {
-    const size_t new_capacity = max( kMinVectorCapacity, ( ( new_size * 3 ) + 1 ) / 2 );
+    const size_t new_capacity = MAX( kMinVectorCapacity, ( ( new_size * 3 ) + 1 ) / 2 );
 //        ALOGV("grow vector %p, new_capacity=%d", this, (int)new_capacity);
     if( ( mStorage ) &&
         ( mCount == where ) &&
@@ -401,7 +396,7 @@ void VectorImpl::_shrink( size_t where, size_t amount )
 
   const size_t new_size = mCount - amount;
   if( new_size * 3 < capacity() ) {
-    const size_t new_capacity = max( kMinVectorCapacity, new_size * 2 );
+    const size_t new_capacity = MAX( kMinVectorCapacity, new_size * 2 );
 //        ALOGV("shrink vector %p, new_capacity=%d", this, (int)new_capacity);
     if( ( where == new_size ) &&
         ( mFlags & HAS_TRIVIAL_COPY ) &&

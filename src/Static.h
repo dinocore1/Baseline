@@ -13,4 +13,4 @@ extern void terminate_string8();
 extern void initialize_string16();
 extern void terminate_string16();
 
-}   
+}

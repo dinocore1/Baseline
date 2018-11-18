@@ -30,7 +30,12 @@ public:
 
   static inline const String8 empty();
 
-  static String8              format( const char* fmt, ... ) __attribute__( ( format( printf, 1, 2 ) ) );
+  static String8              format( const char* fmt, ... )
+#if defined(__GNUC__) || defined(__clang__)
+  __attribute__( ( format( printf, 1, 2 ) ) )
+#endif
+  ;
+
   static String8              formatV( const char* fmt, va_list args );
 
   inline  const char*         string() const;
@@ -55,7 +60,11 @@ public:
   status_t            append( const char* other, size_t numChars );
 
   status_t            appendFormat( const char* fmt, ... )
-  __attribute__( ( format( printf, 2, 3 ) ) );
+#if defined(__GNUC__) || defined(__clang__)
+  __attribute__( ( format( printf, 2, 3 ) ) )
+#endif
+  ;
+
   status_t            appendFormatV( const char* fmt, va_list args );
 
   // Note that this function takes O(N) time to calculate the value.

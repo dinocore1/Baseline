@@ -1,12 +1,23 @@
 #ifndef BASELINE_H_
 #define BASELINE_H_
 
+
+#ifdef WIN32
+  #define WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+#endif
+
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
 #include <errno.h>
 
+#define BASELINE_VERSION_MAJOR @Baseline_VERSION_MAJOR@
+#define BASELINE_VERSION_MINOR @Baseline_VERSION_MINOR@
+#cmakedefine BASELINE_THREAD_SUPPORT
+#cmakedefine CMAKE_USE_PTHREADS_INIT
+#cmakedefine CMAKE_USE_WIN32_THREADS_INIT
 
 #ifndef MIN
   #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -17,6 +28,7 @@
 #endif
 
 #ifdef WIN32
+
   /* Define the default path separator for the platform. */
   #define OS_PATH_SEPARATOR     '\\'
   #define OS_PATH_SEPARATOR_STR "\\"
@@ -30,6 +42,19 @@
 
 namespace baseline {
 
+#if defined(BASELINE_THREAD_SUPPORT)
+  #if defined(CMAKE_USE_PTHREADS_INIT)
+    #include <pthread.h>
+    typedef pthread_mutex_t mutex_t;
+    typedef pthread_cond_t condition_t;
+    typedef pthread_t thread_t;
+  #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
+    typedef CRITICAL_SECTION mutex_t;
+    typedef CONDITION_VARIABLE condition_t;
+    typedef unsigned thread_t;
+  #endif
+#endif
+
 template<class T>
 void swap( T& a, T& b )
 {
@@ -37,6 +62,10 @@ void swap( T& a, T& b )
   a = b;
   b = c;
 }
+
+#ifdef WIN32
+  #undef NO_ERROR
+#endif
 
 typedef int32_t status_t;
 enum {
@@ -72,6 +101,9 @@ enum {
   FDS_NOT_ALLOWED     = 0x80000007,
 };
 
+#ifdef WIN32
+  #define NO_ERROR 0L
+#endif
 
 }
 

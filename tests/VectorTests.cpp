@@ -85,10 +85,10 @@ TEST_CASE( "vector of pointers", "[Vector]" )
 
   struct MyStruct2 : public MyStruct {
     void* test() {
-
+      return NULL;
     }
   };
 
   Vector<MyStruct*> vector;
-  vector.add( new MyStruct2 );
+  //vector.add( new MyStruct2 );
 }

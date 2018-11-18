@@ -44,7 +44,7 @@ static char16_t* allocFromUTF8( const char* u8str, size_t u8len )
 
   const uint8_t* u8cur = ( const uint8_t* ) u8str;
 
-  const ssize_t u16len = utf8_to_utf16_length( u8cur, u8len );
+  const int u16len = utf8_to_utf16_length( u8cur, u8len );
   if( u16len < 0 ) {
     return getEmptyString();
   }
@@ -273,7 +273,7 @@ status_t String16::insert( size_t pos, const char16_t* chrs, size_t len )
   return NO_MEMORY;
 }
 
-ssize_t String16::findFirst( char16_t c ) const
+int String16::findFirst( char16_t c ) const
 {
   const char16_t* str = string();
   const char16_t* p = str;
@@ -287,7 +287,7 @@ ssize_t String16::findFirst( char16_t c ) const
   return -1;
 }
 
-ssize_t String16::findLast( char16_t c ) const
+int String16::findLast( char16_t c ) const
 {
   const char16_t* str = string();
   const char16_t* p = str;
