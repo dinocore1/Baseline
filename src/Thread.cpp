@@ -80,7 +80,7 @@ status_t Thread::start()
 
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
 
-  _beginthreadex( NULL, 0, trampoline, data, NULL, &data->mThreadId);
+  _beginthreadex( NULL, 0, trampoline, data, NULL, &data->mThreadId );
 
 #endif
 

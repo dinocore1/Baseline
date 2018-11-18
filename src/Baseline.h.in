@@ -47,11 +47,11 @@ namespace baseline {
     #include <pthread.h>
     typedef pthread_mutex_t mutex_t;
     typedef pthread_cond_t condition_t;
-	typedef pthread_t thread_t;
+    typedef pthread_t thread_t;
   #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
     typedef CRITICAL_SECTION mutex_t;
     typedef CONDITION_VARIABLE condition_t;
-	typedef unsigned thread_t;
+    typedef unsigned thread_t;
   #endif
 #endif
 
