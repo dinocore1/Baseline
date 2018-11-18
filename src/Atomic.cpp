@@ -37,8 +37,6 @@ int32_t atomic_cmpxchg( int32_t oldvalue, int32_t newvalue, volatile int32_t* pt
 
 #elif defined(WIN32)
 
-#include <Windows.h>
-
 int32_t atomic_inc( volatile int32_t* ptr )
 {
   return InterlockedIncrement( ( long* ) ptr ) - 1;
