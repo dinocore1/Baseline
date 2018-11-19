@@ -88,7 +88,8 @@ TEST_CASE( "does release work?", "[UniquePointer]" )
   delete rawC;
 }
 
-TEST_CASE("does reset work?", "[UniquePointer]") {
+TEST_CASE( "does reset work?", "[UniquePointer]" )
+{
   static int count = 0;
 
   struct MyObj {
@@ -102,12 +103,12 @@ TEST_CASE("does reset work?", "[UniquePointer]") {
   };
 
   {
-    up<MyObj> c(new MyObj);
-    REQUIRE(count == 1);
-    c.reset(new MyObj);
-    REQUIRE(count == 1);
+    up<MyObj> c( new MyObj );
+    REQUIRE( count == 1 );
+    c.reset( new MyObj );
+    REQUIRE( count == 1 );
   }
-  REQUIRE(count == 0);
+  REQUIRE( count == 0 );
 }
 
 TEST_CASE( "does free array?", "[UniquePointer]" )
@@ -160,7 +161,8 @@ TEST_CASE( "does release array work?", "[UniquePointer]" )
   delete[] raw;
 }
 
-TEST_CASE("does reset array work?", "[UniquePointer]") {
+TEST_CASE( "does reset array work?", "[UniquePointer]" )
+{
   static int count = 0;
 
   struct MyObj {
@@ -174,32 +176,33 @@ TEST_CASE("does reset array work?", "[UniquePointer]") {
   };
 
   {
-    up<MyObj[]> c(new MyObj[4]);
-    REQUIRE(count == 4);
-    c.reset(new MyObj[2]);
-    REQUIRE(count == 2);
+    up<MyObj[]> c( new MyObj[4] );
+    REQUIRE( count == 4 );
+    c.reset( new MyObj[2] );
+    REQUIRE( count == 2 );
   }
 
-  REQUIRE(count == 0);
+  REQUIRE( count == 0 );
 }
 
-TEST_CASE("does custom deleter work?", "[UniquePointer]") {
+TEST_CASE( "does custom deleter work?", "[UniquePointer]" )
+{
 
   static bool freed = false;
 
   struct Freer {
-    void operator()(int* p) {
-      REQUIRE(*p == 123);
-      free(p);
+    void operator()( int* p ) {
+      REQUIRE( *p == 123 );
+      free( p );
       freed = true;
     }
   };
 
   {
-    up<int, Freer> i(reinterpret_cast<int*>(malloc(sizeof(int))));
+    up<int, Freer> i( reinterpret_cast<int*>( malloc( sizeof( int ) ) ) );
     *i = 123;
   }
 
-  REQUIRE(freed == true);
+  REQUIRE( freed == true );
 }
 

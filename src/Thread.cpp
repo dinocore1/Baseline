@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
@@ -95,7 +95,7 @@ status_t Thread::start()
   pthread_attr_init( &attr );
   pthread_attr_setdetachstate( &attr, PTHREAD_CREATE_DETACHED );
   pthread_create( &data->mThreadId, &attr, trampoline, data );
-  pthread_attr_destroy(&attr);
+  pthread_attr_destroy( &attr );
 
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
 

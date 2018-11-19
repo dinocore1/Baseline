@@ -20,7 +20,7 @@ TEST_CASE( "thread runs", "[Thread]" )
     }
   };
 
-  sp<MyThread> t(new MyThread());
+  sp<MyThread> t( new MyThread() );
   t->start();
   t->join();
   REQUIRE( count == 1 );
