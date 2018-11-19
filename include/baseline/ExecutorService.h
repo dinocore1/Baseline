@@ -10,7 +10,7 @@ namespace baseline {
 class Runnable
 {
 public:
-	virtual ~Runnable() {};
+  virtual ~Runnable() {};
   virtual void run() = 0;
 };
 

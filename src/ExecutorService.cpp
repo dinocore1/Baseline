@@ -1,7 +1,7 @@
 #include <baseline/Baseline.h>
 #include <baseline/String8.h>
-#include <baseline/ExecutorService.h>
 #include <baseline/Vector.h>
+#include <baseline/ExecutorService.h>
 #include <baseline/Thread.h>
 #include <baseline/Mutex.h>
 #include <baseline/Condition.h>
@@ -11,7 +11,7 @@ namespace baseline {
 class DLL_LOCAL WorkerThread : public Thread
 {
 public:
-	WorkerThread(Mutex&, Condition&, Vector<Runnable*>&);
+  WorkerThread( Mutex&, Condition&, Vector<Runnable*>& );
   void run();
 
   Mutex& mMutex;
@@ -21,16 +21,16 @@ public:
 
 };
 
-WorkerThread::WorkerThread(Mutex& mutex, Condition& condition, Vector<Runnable*>& queue)
-	: mMutex(mutex), mCondition(condition), mQueue(queue)
+WorkerThread::WorkerThread( Mutex& mutex, Condition& condition, Vector<Runnable*>& queue )
+  : mMutex( mutex ), mCondition( condition ), mQueue( queue )
 {
 
 }
 
 void WorkerThread::run()
 {
-	Mutex::Autolock l(mMutex);
-  
+  Mutex::Autolock l( mMutex );
+
   while( mRunning ) {
     if( mQueue.isEmpty() ) {
       mCondition.wait( mMutex );
@@ -68,28 +68,28 @@ ExecutorServiceImpl::ExecutorServiceImpl( const String8& name )
   : mName( name )
 {
   mQueue.setCapacity( 10 );
-  mThread = sp<WorkerThread>(new WorkerThread(mMutex, mCondition, mQueue));
+  mThread = sp<WorkerThread>( new WorkerThread( mMutex, mCondition, mQueue ) );
 }
 
 void ExecutorServiceImpl::start()
 {
-	Mutex::Autolock l(mMutex);
-	mThread->mRunning = true;
-	mThread->start();
+  Mutex::Autolock l( mMutex );
+  mThread->mRunning = true;
+  mThread->start();
 }
 
 void ExecutorServiceImpl::shutdown()
 {
-	{
-		Mutex::Autolock l(mMutex);
-		if (mThread->mRunning) {
-			mThread->mRunning = false;
-			mCondition.signalAll();
+  {
+    Mutex::Autolock l( mMutex );
+    if( mThread->mRunning ) {
+      mThread->mRunning = false;
+      mCondition.signalAll();
 
-		}
-	}
+    }
+  }
 
-	mThread->join();
+  mThread->join();
 }
 
 void ExecutorServiceImpl::execute( Runnable* task )
