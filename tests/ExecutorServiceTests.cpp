@@ -18,9 +18,9 @@ TEST_CASE( "runs tasks", "[ExecutorService]" )
     }
   };
   sp<ExecutorService> exe = ExecutorService::createSingleThread( String8( "exe" ) );
-  exe->execute( new MyRunnable );
+  sp<Future> f = exe->execute( new MyRunnable );
+  f->wait();
 
+  REQUIRE( count == 1 );
   exe->shutdown();
-
-
 }

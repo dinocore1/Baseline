@@ -14,6 +14,13 @@ public:
   virtual void run() = 0;
 };
 
+class Future : public RefBase
+{
+public:
+  virtual void wait();
+  virtual void cancel();
+};
+
 class ExecutorService : public RefBase
 {
 public:
@@ -21,7 +28,7 @@ public:
   static sp<ExecutorService> createSingleThread( const String8& name );
 
   virtual void shutdown() = 0;
-  virtual void execute( Runnable* ) = 0;
+  virtual sp<Future> execute( Runnable* ) = 0;
 
 };
 

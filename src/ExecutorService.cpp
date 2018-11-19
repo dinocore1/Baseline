@@ -5,47 +5,29 @@
 #include <baseline/Thread.h>
 #include <baseline/Mutex.h>
 #include <baseline/Condition.h>
+#include <baseline/UniquePointer.h>
 
 namespace baseline {
+
+void Future::wait()
+{}
+
+void Future::cancel()
+{}
+
+class WorkTask;
+class ExecutorServiceImpl;
 
 class DLL_LOCAL WorkerThread : public Thread
 {
 public:
-  WorkerThread( Mutex&, Condition&, Vector<Runnable*>& );
+  WorkerThread( ExecutorServiceImpl& exeService )
+    : mExeService( exeService ) {}
   void run();
 
-  Mutex& mMutex;
-  Condition& mCondition;
-  Vector<Runnable*>& mQueue;
+  ExecutorServiceImpl& mExeService;
   bool mRunning;
-
 };
-
-WorkerThread::WorkerThread( Mutex& mutex, Condition& condition, Vector<Runnable*>& queue )
-  : mMutex( mutex ), mCondition( condition ), mQueue( queue )
-{
-
-}
-
-void WorkerThread::run()
-{
-  Mutex::Autolock l( mMutex );
-
-  while( mRunning ) {
-    if( mQueue.isEmpty() ) {
-      mCondition.wait( mMutex );
-    } else {
-      Runnable* r = mQueue[0];
-      mQueue.pop();
-
-      mMutex.unlock();
-      r->run();
-      delete r;
-      mMutex.lock();
-    }
-  }
-
-}
 
 class DLL_LOCAL ExecutorServiceImpl : public ExecutorService
 {
@@ -53,22 +35,79 @@ public:
   ExecutorServiceImpl( const String8& name );
 
   void shutdown();
-  void execute( Runnable* task );
+  sp<Future> execute( Runnable* task );
   void start();
 
   String8 mName;
   Mutex mMutex;
   Condition mCondition;
-  Vector<Runnable*> mQueue;
+  Vector<sp<WorkTask>> mQueue;
   sp<WorkerThread> mThread;
 
 };
 
+struct DLL_LOCAL WorkTask : public Future {
+
+  WorkTask( ExecutorServiceImpl& exeService, Runnable* runnable )
+    : mExeService( exeService ), mRunnable( runnable ), mState( State::Queued )
+  {}
+
+  ~WorkTask() {}
+
+  enum State {
+    Queued,
+    Running,
+    Finished
+  };
+
+  ExecutorServiceImpl& mExeService;
+  up<Runnable> mRunnable;
+  State mState;
+
+
+  void run() {
+    mState = State::Running;
+    mRunnable->run();
+    mState = State::Finished;
+  }
+
+  void wait() {
+    Mutex::Autolock l( mExeService.mMutex );
+    while( mState == State::Queued || mState == State::Running ) {
+      mExeService.mCondition.wait( mExeService.mMutex );
+    }
+  }
+
+  void cancel() {
+
+  }
+};
+
+
+void WorkerThread::run()
+{
+  Mutex::Autolock l( mExeService.mMutex );
+
+  while( mRunning ) {
+    if( mExeService.mQueue.isEmpty() ) {
+      mExeService.mCondition.wait( mExeService.mMutex );
+    } else {
+      sp<WorkTask> r = mExeService.mQueue[0];
+      mExeService.mQueue.pop();
+
+      mExeService.mMutex.unlock();
+      r->run();
+      mExeService.mMutex.lock();
+    }
+  }
+
+}
+
+
 ExecutorServiceImpl::ExecutorServiceImpl( const String8& name )
-  : mName( name )
+  : mName( name ), mThread( new WorkerThread( *this ) )
 {
   mQueue.setCapacity( 10 );
-  mThread = sp<WorkerThread>( new WorkerThread( mMutex, mCondition, mQueue ) );
 }
 
 void ExecutorServiceImpl::start()
@@ -92,11 +131,13 @@ void ExecutorServiceImpl::shutdown()
   mThread->join();
 }
 
-void ExecutorServiceImpl::execute( Runnable* task )
+sp<Future> ExecutorServiceImpl::execute( Runnable* runnable )
 {
+  sp<WorkTask> task( new WorkTask( *this, runnable ) );
   Mutex::Autolock l( mMutex );
   mQueue.push_back( task );
   mCondition.signalOne();
+  return task;
 }
 
 
