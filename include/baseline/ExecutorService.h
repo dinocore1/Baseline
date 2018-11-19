@@ -1,6 +1,7 @@
 #ifndef EXECUTORSERVICE_H_
 #define EXECUTORSERVICE_H_
 
+#include <baseline/StrongPointer.h>
 #include <baseline/RefBase.h>
 
 namespace baseline {
@@ -18,8 +19,8 @@ public:
 
   static sp<ExecutorService> createSingleThread( const String8& name );
 
-  void shutdown();
-  void execute( Runnable* );
+  virtual void shutdown() = 0;
+  virtual void execute( Runnable* ) = 0;
 
 };
 
