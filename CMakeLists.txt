@@ -28,6 +28,7 @@ include_directories(src include ${PROJECT_BINARY_DIR}/include)
 list(APPEND Baseline_SRCS
   src/Atomic.cpp
   src/Debug.cpp
+  src/ExecutorService.cpp
   src/MathUtils.cpp
   src/RefBase.cpp
   src/SharedBuffer.cpp
