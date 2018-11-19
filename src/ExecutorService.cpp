@@ -9,6 +9,13 @@
 
 namespace baseline {
 
+enum DLL_LOCAL State {
+  Queued,
+  Running,
+  Canceled,
+  Finished
+};
+
 void Future::wait()
 {}
 
@@ -54,22 +61,11 @@ struct DLL_LOCAL WorkTask : public Future {
 
   ~WorkTask() {}
 
-  enum State {
-    Queued,
-    Running,
-    Finished
-  };
+
 
   ExecutorServiceImpl& mExeService;
   up<Runnable> mRunnable;
   State mState;
-
-
-  void run() {
-    mState = State::Running;
-    mRunnable->run();
-    mState = State::Finished;
-  }
 
   void wait() {
     Mutex::Autolock l( mExeService.mMutex );
@@ -79,7 +75,10 @@ struct DLL_LOCAL WorkTask : public Future {
   }
 
   void cancel() {
-
+    Mutex::Autolock l( mExeService.mMutex );
+    if( mState == State::Queued ) {
+      mState = State::Canceled;
+    }
   }
 };
 
@@ -95,9 +94,16 @@ void WorkerThread::run()
       sp<WorkTask> r = mExeService.mQueue[0];
       mExeService.mQueue.pop();
 
-      mExeService.mMutex.unlock();
-      r->run();
-      mExeService.mMutex.lock();
+      if( r->mState == State::Queued ) {
+        r->mState = State::Running;
+        mExeService.mMutex.unlock();
+        r->mRunnable->run();
+        mExeService.mMutex.lock();
+        r->mState = State::Finished;
+      }
+
+      mExeService.mCondition.signalAll();
+
     }
   }
 
