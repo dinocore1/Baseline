@@ -95,6 +95,7 @@ status_t Thread::start()
   pthread_attr_init( &attr );
   pthread_attr_setdetachstate( &attr, PTHREAD_CREATE_DETACHED );
   pthread_create( &data->mThreadId, &attr, trampoline, data );
+  pthread_attr_destroy(&attr);
 
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
 
@@ -107,14 +108,12 @@ status_t Thread::start()
 
 status_t Thread::join()
 {
-  incStrong( this );
   ThreadData* data = toThreadData( mData );
   Mutex::Autolock l( data->mLock );
   while( data->mRunning ) {
     data->mThreadExitedCondition.wait( data->mLock );
   }
 
-  decStrong( this );
   return OK;
 }
 
