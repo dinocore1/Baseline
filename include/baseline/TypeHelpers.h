@@ -16,8 +16,10 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef TYPEHELPERS_H_
-#define TYPEHELPERS_H_
+#ifndef BASELINE_TYPEHELPERS_H_
+#define BASELINE_TYPEHELPERS_H_
+
+#include <new>
 
 namespace baseline {
 
@@ -316,4 +318,4 @@ template <typename T> inline hash_t hash_type( const T*& value )
 
 }
 
-#endif // TYPEHELPERS_H_
+#endif // BASELINE_TYPEHELPERS_H_
