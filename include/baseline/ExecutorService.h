@@ -1,6 +1,7 @@
 #ifndef EXECUTORSERVICE_H_
 #define EXECUTORSERVICE_H_
 
+#include <baseline/String8.h>
 #include <baseline/StrongPointer.h>
 #include <baseline/RefBase.h>
 
@@ -9,7 +10,7 @@ namespace baseline {
 class Runnable
 {
 public:
-  virtual ~Runnable();
+	virtual ~Runnable() {};
   virtual void run() = 0;
 };
 

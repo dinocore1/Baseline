@@ -25,4 +25,8 @@ if(BASELINE_THREAD_SUPPORT)
   add_executable(ThreadTests ThreadTests.cpp)
   target_link_libraries(ThreadTests baseline)
   add_test(ThreadTests ThreadTests)
+
+  add_executable(ExecutorServiceTests ExecutorServiceTests.cpp)
+  target_link_libraries(ExecutorServiceTests baseline)
+  add_test(ExecutorServiceTests ExecutorServiceTests)
 endif()

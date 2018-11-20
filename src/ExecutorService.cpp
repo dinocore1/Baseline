@@ -11,6 +11,7 @@ namespace baseline {
 class DLL_LOCAL WorkerThread : public Thread
 {
 public:
+	WorkerThread(Mutex&, Condition&, Vector<Runnable*>&);
   void run();
 
   Mutex& mMutex;
@@ -20,12 +21,17 @@ public:
 
 };
 
-void WorkerThread::run()
+WorkerThread::WorkerThread(Mutex& mutex, Condition& condition, Vector<Runnable*>& queue)
+	: mMutex(mutex), mCondition(condition), mQueue(queue)
 {
 
-  mRunning = true;
+}
+
+void WorkerThread::run()
+{
+	Mutex::Autolock l(mMutex);
+  
   while( mRunning ) {
-    Mutex::Autolock l( mMutex );
     if( mQueue.isEmpty() ) {
       mCondition.wait( mMutex );
     } else {
@@ -54,6 +60,7 @@ public:
   Mutex mMutex;
   Condition mCondition;
   Vector<Runnable*> mQueue;
+  sp<WorkerThread> mThread;
 
 };
 
@@ -61,11 +68,28 @@ ExecutorServiceImpl::ExecutorServiceImpl( const String8& name )
   : mName( name )
 {
   mQueue.setCapacity( 10 );
+  mThread = sp<WorkerThread>(new WorkerThread(mMutex, mCondition, mQueue));
+}
+
+void ExecutorServiceImpl::start()
+{
+	Mutex::Autolock l(mMutex);
+	mThread->mRunning = true;
+	mThread->start();
 }
 
 void ExecutorServiceImpl::shutdown()
 {
+	{
+		Mutex::Autolock l(mMutex);
+		if (mThread->mRunning) {
+			mThread->mRunning = false;
+			mCondition.signalAll();
 
+		}
+	}
+
+	mThread->join();
 }
 
 void ExecutorServiceImpl::execute( Runnable* task )
