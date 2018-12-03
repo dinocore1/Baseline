@@ -9,6 +9,7 @@ option(BUILD_TESTS "Build unit tests" ON)
 
 set(Baseline_VERSION_MAJOR 0)
 set(Baseline_VERSION_MINOR 1)
+set(Baseline_VERSION_PATCH 0)
 
 find_package(Threads)
 
@@ -44,7 +45,7 @@ if(BASELINE_THREAD_SUPPORT)
   list(APPEND Baseline_SRCS
     src/Condition.cpp
     src/Mutex.cpp
-	src/Thread.cpp
+	  src/Thread.cpp
   )
 endif()
 
