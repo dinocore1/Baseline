@@ -28,6 +28,10 @@
   #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #endif
 
+#ifndef PI
+  #define PI 3.14159265359
+#endif
+
 #ifdef WIN32
 
   /* Define the default path separator for the platform. */
