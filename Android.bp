@@ -1,0 +1,38 @@
+cc_library {
+    name: "libbaseline",
+    vendor_available: true,
+    vndk: {
+        enabled: true,
+    },
+
+    srcs: [
+        "src/Atomic.cpp",
+        "src/Condition.cpp",
+        "src/Debug.cpp",
+        "src/ExecutorService.cpp",
+        "src/MathUtils.cpp",
+        "src/Mutex.cpp",
+        "src/RefBase.cpp",
+        "src/SharedBuffer.cpp",
+        "src/Static.cpp",
+        "src/String8.cpp",
+        "src/String16.cpp",
+        "src/TextOutput.cpp",
+        "src/Thread.cpp",
+        "src/Unicode.cpp",
+        "src/VectorImpl.cpp",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Wno-unused-parameter",
+    ],
+
+    export_include_dirs: ["include", "android"],
+
+    shared_libs: [
+        "liblog",
+    ]
+
+}
+
