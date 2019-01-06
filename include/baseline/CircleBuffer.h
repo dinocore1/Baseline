@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2007 Baseline
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 #ifndef BASELINE_CIRCLEBUFFER_H_
 #define BASELINE_CIRCLEBUFFER_H_
 
@@ -7,84 +24,125 @@ template<typename T>
 class CircleBuffer
 {
 public:
-  CircleBuffer( int size );
+  CircleBuffer( uint32_t capacity );
   ~CircleBuffer();
 
-  inline int size() const;
-  inline int available() const;
-  void put( const T& );
-  int put( T* buf, int len );
+  inline
+  uint32_t capacity() const;
+
+  inline
+  uint32_t size() const;
+
+  inline
+  uint32_t available() const;
+
+  inline
+  bool empty() const;
+
+  inline
+  bool full() const;
+
+  uint32_t write( const T* buf, uint32_t size );
+  void put( const T& v );
+
+  uint32_t read( T* buf, uint32_t size );
   T get();
 
 private:
-  int mMaxSize;
-  int mSize;
-  T* mBuffer;
-  int mHead;
-  int mTail;
+  uint32_t mCapacity;
+  uint32_t mSize;
+  uint32_t mHead;
+  uint32_t mTail;
+  T* mData;
 
 };
 
 /////////////// Implementation ////////////////////
 
 template<typename T>
-CircleBuffer<T>::CircleBuffer( int size )
-  : mMaxSize( size ), mSize( 0 ), mHead( 0 ), mTail( 0 )
+CircleBuffer<T>::CircleBuffer( uint32_t capacity )
+  : mCapacity( capacity ), mSize( 0 ), mHead( 0 ), mTail( 0 )
 {
-  mBuffer = new T[mMaxSize];
+  mData = new T[mCapacity];
 }
 
 template<typename T>
 CircleBuffer<T>::~CircleBuffer()
 {
-  delete[] mBuffer;
+  delete[] mData;
+  mCapacity = 0;
+  mSize = 0;
 }
 
 template<typename T>
-int CircleBuffer<T>::size() const
+uint32_t CircleBuffer<T>::capacity() const
+{
+  return mCapacity;
+}
+
+template<typename T>
+uint32_t CircleBuffer<T>::size() const
 {
   return mSize;
 }
 
 template<typename T>
-int CircleBuffer<T>::available() const
+uint32_t CircleBuffer<T>::available() const
 {
-  return mMaxSize - mSize;
+  return mCapacity - mSize;
+}
+
+template<typename T>
+bool CircleBuffer<T>::empty() const
+{
+  return mSize == 0;
+}
+
+template<typename T>
+bool CircleBuffer<T>::full() const
+{
+  return mSize == mCapacity;
+}
+
+template <typename T>
+uint32_t CircleBuffer<T>::write( const T* buf, uint32_t size )
+{
+  uint32_t len = MIN( size, mCapacity - mSize );
+  len = MIN( len, mCapacity - mHead );
+  for( uint32_t i = 0; i < len; i++ ) {
+    mData[mHead + i] = buf[i];
+  }
+
+  mHead = ( mHead + len ) % mCapacity;
+  mSize += len;
+  return len;
+}
+
+template <typename T>
+uint32_t CircleBuffer<T>::read( T* buf, uint32_t size )
+{
+  uint32_t len = MIN( size, mSize );
+  len = MIN( len, mCapacity - mTail );
+  for( uint32_t i = 0; i < len; i++ ) {
+    buf[i] = mData[mTail + i];
+  }
+
+  mTail = ( mTail + len ) % mCapacity;
+  mSize -= len;
+  return len;
 }
 
 template<typename T>
 void CircleBuffer<T>::put( const T& v )
 {
-  if( mSize < mMaxSize ) {
-    mBuffer[mTail] = v;
-    mTail = ( mTail + 1 ) % mMaxSize;
-    mSize++;
-  }
-}
-
-template<typename T>
-int CircleBuffer<T>::put( T* buf, int len )
-{
-  len = MIN( len, available() );
-  len = MIN( len, mMaxSize - mTail );
-
-  for( int i = 0; i < len; i++ ) {
-    mBuffer[mTail + i] = buf[i];
-  }
-  mTail = ( mTail + len ) % mMaxSize;
-  mSize += len;
-  return len;
+  write( &v, 1 );
 }
 
 template<typename T>
 T CircleBuffer<T>::get()
 {
   T retval;
-  if( mSize > 0 ) {
-    retval = mBuffer[mHead];
-    mHead = ( mHead + 1 ) % mMaxSize;
-    mSize--;
-  }
+  read( &retval, 1 );
 
   return retval;
 }

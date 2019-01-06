@@ -30,7 +30,7 @@ TEST_CASE( "circle buffer put multiple", "[CircleBuffer]" )
   int myarray[10];
   int num;
   CircleBuffer<int> buffer( 5 );
-  int n = buffer.put( myarray, 10 );
+  int n = buffer.write( myarray, 10 );
   REQUIRE( n <= 5 );
   REQUIRE( buffer.size() == n );
   REQUIRE( buffer.available() == 5 - n );
