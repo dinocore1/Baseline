@@ -1,5 +1,5 @@
-#ifndef CIRCLEBUFFER_H_
-#define CIRCLEBUFFER_H_
+#ifndef BASELINE_CIRCLEBUFFER_H_
+#define BASELINE_CIRCLEBUFFER_H_
 
 namespace baseline {
 
@@ -91,4 +91,4 @@ T CircleBuffer<T>::get()
 
 }
 
-#endif // CIRCLEBUFFER_H_
+#endif // BASELINE_CIRCLEBUFFER_H_

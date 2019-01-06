@@ -16,8 +16,8 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef STRING8_H_
-#define STRING8_H_
+#ifndef BASELINE_STRING8_H_
+#define BASELINE_STRING8_H_
 
 #include <stdarg.h>
 
@@ -400,4 +400,4 @@ inline String8::operator const char* () const
 }
 
 
-#endif // STRING8_H_
+#endif // BASELINE_STRING8_H_

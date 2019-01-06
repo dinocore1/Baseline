@@ -16,8 +16,8 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef STRONGPOINTER_H_
-#define STRONGPOINTER_H_
+#ifndef BASELINE_STRONGPOINTER_H_
+#define BASELINE_STRONGPOINTER_H_
 
 namespace baseline {
 
@@ -245,4 +245,4 @@ inline TextOutput& operator<<( TextOutput& to, const sp<T>& val )
 
 }
 
-#endif // STRONGPOINTER_H_
+#endif // BASELINE_STRONGPOINTER_H_

@@ -16,8 +16,8 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef SHAREDBUFFER_H_
-#define SHAREDBUFFER_H_
+#ifndef BASELINE_SHAREDBUFFER_H_
+#define BASELINE_SHAREDBUFFER_H_
 
 namespace baseline {
 
@@ -138,4 +138,4 @@ bool SharedBuffer::onlyOwner() const
 
 }
 
-#endif // SHAREDBUFFER_H_
+#endif // BASELINE_SHAREDBUFFER_H_

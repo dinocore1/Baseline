@@ -16,8 +16,8 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef ATOMIC_H_
-#define ATOMIC_H_
+#ifndef BASELINE_ATOMIC_H_
+#define BASELINE_ATOMIC_H_
 
 namespace baseline {
 
@@ -44,4 +44,4 @@ int32_t atomic_cmpxchg( int32_t oldvalue, int32_t newvalue, volatile int32_t* pt
 }
 
 
-#endif // ATOMIC_H_
+#endif // BASELINE_ATOMIC_H_

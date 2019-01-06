@@ -16,8 +16,8 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef UNIQUEPOINTER_H_
-#define UNIQUEPOINTER_H_
+#ifndef BASELINE_UNIQUEPOINTER_H_
+#define BASELINE_UNIQUEPOINTER_H_
 
 namespace baseline {
 
@@ -156,4 +156,4 @@ using up = UniquePtr<T, D>;
 
 }
 
-#endif // UNIQUEPOINTER_H_
+#endif // BASELINE_UNIQUEPOINTER_H_

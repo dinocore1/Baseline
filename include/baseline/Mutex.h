@@ -16,8 +16,8 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef MUTEX_H_
-#define MUTEX_H_
+#ifndef BASELINE_MUTEX_H_
+#define BASELINE_MUTEX_H_
 
 namespace baseline {
 
@@ -58,4 +58,4 @@ private:
 
 }
 
-#endif // MUTEX_H_
+#endif // BASELINE_MUTEX_H_

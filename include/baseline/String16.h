@@ -16,8 +16,8 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef STRING16_H_
-#define STRING16_H_
+#ifndef BASELINE_STRING16_H_
+#define BASELINE_STRING16_H_
 
 #include <baseline/SharedBuffer.h>
 #include <baseline/TypeHelpers.h>
@@ -228,4 +228,4 @@ inline String16::operator const char16_t* () const
 
 }
 
-#endif // STRING16_H_
+#endif // BASELINE_STRING16_H_

@@ -16,8 +16,8 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef CONDITION_H_
-#define CONDITION_H_
+#ifndef BASELINE_CONDITION_H_
+#define BASELINE_CONDITION_H_
 
 #include <baseline/Mutex.h>
 
@@ -54,4 +54,4 @@ private:
 
 }
 
-#endif // CONDITION_H_
+#endif // BASELINE_CONDITION_H_

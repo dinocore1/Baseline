@@ -16,8 +16,8 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef VECTOR_H_
-#define VECTOR_H_
+#ifndef BASELINE_VECTOR_H_
+#define BASELINE_VECTOR_H_
 
 #include <baseline/VectorImpl.h>
 #include <baseline/TypeHelpers.h>
@@ -474,4 +474,4 @@ void Vector<TYPE>::do_move_backward( void* dest, const void* from, size_t num ) 
 }
 
 
-#endif // VECTOR_H_
+#endif // BASELINE_VECTOR_H_

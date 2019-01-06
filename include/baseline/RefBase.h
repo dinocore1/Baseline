@@ -16,8 +16,8 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef REFBASE_H_
-#define REFBASE_H_
+#ifndef BASELINE_REFBASE_H_
+#define BASELINE_REFBASE_H_
 
 #include <baseline/Atomic.h>
 #include <baseline/StrongPointer.h>
@@ -574,4 +574,4 @@ void move_backward_type( wp<TYPE>* d, wp<TYPE> const* s, size_t n )
 
 }
 
-#endif // REFBASE_H_
+#endif // BASELINE_REFBASE_H_

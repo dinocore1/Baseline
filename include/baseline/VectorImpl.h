@@ -16,8 +16,8 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef VECTORIMPL_H_
-#define VECTORIMPL_H_
+#ifndef BASELINE_VECTORIMPL_H_
+#define BASELINE_VECTORIMPL_H_
 
 namespace baseline {
 
@@ -190,4 +190,4 @@ private:
 
 }
 
-#endif // VECTORIMPL_H_
+#endif // BASELINE_VECTORIMPL_H_

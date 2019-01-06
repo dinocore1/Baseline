@@ -16,8 +16,8 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef DEBUG_H_
-#define DEBUG_H_
+#ifndef BASELINE_DEBUG_H_
+#define BASELINE_DEBUG_H_
 
 namespace baseline {
 #ifdef __cplusplus
@@ -66,4 +66,4 @@ void printHexData( int32_t indent, const void* buf, size_t length,
 #endif
 }
 
-#endif // DEBUG_H_
+#endif // BASELINE_DEBUG_H_

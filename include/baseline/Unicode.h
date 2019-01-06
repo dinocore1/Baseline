@@ -16,8 +16,8 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef UNICODE_H_
-#define UNICODE_H_
+#ifndef BASELINE_UNICODE_H_
+#define BASELINE_UNICODE_H_
 
 
 extern "C" {
@@ -167,4 +167,4 @@ extern "C" {
 
 }
 
-#endif // UNICODE_H_
+#endif // BASELINE_UNICODE_H_

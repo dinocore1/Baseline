@@ -16,8 +16,8 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef TEXTOUTPUT_H_
-#define TEXTOUTPUT_H_
+#ifndef BASELINE_TEXTOUTPUT_H_
+#define BASELINE_TEXTOUTPUT_H_
 
 namespace baseline {
 class TextOutput
@@ -217,4 +217,4 @@ inline bool HexDump::carrayStyle() const
 }
 
 
-#endif // TEXTOUTPUT_H_
+#endif // BASELINE_TEXTOUTPUT_H_

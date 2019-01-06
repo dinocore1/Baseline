@@ -16,8 +16,8 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef LOG_H_
-#define LOG_H_
+#ifndef BASELINE_LOG_H_
+#define BASELINE_LOG_H_
 
 #define ALOG_ASSERT(cond, ...)
 #define LOG_ALWAYS_FATAL_IF(cond, ...)
@@ -26,4 +26,4 @@
 #define LOG_ALWAYS_FATAL(...)
 
 
-#endif // LOG_H_
+#endif // BASELINE_LOG_H_

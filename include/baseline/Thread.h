@@ -16,8 +16,8 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef THREADS_H_
-#define THREADS_H_
+#ifndef BASELINE_THREADS_H_
+#define BASELINE_THREADS_H_
 
 #include <baseline/RefBase.h>
 
@@ -39,4 +39,4 @@ private:
 
 }
 
-#endif // THREADS_H_
+#endif // BASELINE_THREADS_H_

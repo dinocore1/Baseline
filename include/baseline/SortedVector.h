@@ -16,8 +16,8 @@
  * Modifications by Paul Soucy copyright (C) 2018
  */
 
-#ifndef SORTEDVECTOR_H_
-#define SORTEDVECTOR_H_
+#ifndef BASELINE_SORTEDVECTOR_H_
+#define BASELINE_SORTEDVECTOR_H_
 
 #include <baseline/Vector.h>
 #include <baseline/VectorImpl.h>
@@ -307,4 +307,4 @@ int SortedVector<TYPE>::do_compare( const void* lhs, const void* rhs ) const
 
 }
 
-#endif // SORTEDVECTOR_H_
+#endif // BASELINE_SORTEDVECTOR_H_
