@@ -49,10 +49,7 @@ public:
   virtual                 ~Vector();
 
   /*! copy operator */
-  const Vector<TYPE>&     operator = ( const Vector<TYPE>& rhs ) const;
   Vector<TYPE>&           operator = ( const Vector<TYPE>& rhs );
-
-  const Vector<TYPE>&     operator = ( const SortedVector<TYPE>& rhs ) const;
   Vector<TYPE>&           operator = ( const SortedVector<TYPE>& rhs );
 
   /*
@@ -109,9 +106,9 @@ public:
    */
 
   //! copy-on write support, grants write access to an item
-  TYPE&           editItemAt( size_t index );
+  inline TYPE&           editItemAt( size_t index );
   //! grants right access to the top of the stack (last element)
-  TYPE&           editTop();
+  inline TYPE&           editTop();
 
   /*!
    * append/insert another vector
@@ -270,23 +267,9 @@ Vector<TYPE>& Vector<TYPE>::operator = ( const Vector<TYPE>& rhs )
 }
 
 template<class TYPE> inline
-const Vector<TYPE>& Vector<TYPE>::operator = ( const Vector<TYPE>& rhs ) const
-{
-  VectorImpl::operator = ( static_cast<const VectorImpl&>( rhs ) );
-  return *this;
-}
-
-template<class TYPE> inline
 Vector<TYPE>& Vector<TYPE>::operator = ( const SortedVector<TYPE>& rhs )
 {
   VectorImpl::operator = ( static_cast<const VectorImpl&>( rhs ) );
-  return *this;
-}
-
-template<class TYPE> inline
-const Vector<TYPE>& Vector<TYPE>::operator = ( const SortedVector<TYPE>& rhs ) const
-{
-  VectorImpl::operator = ( rhs );
   return *this;
 }
 
