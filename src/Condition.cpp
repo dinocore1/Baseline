@@ -38,6 +38,7 @@ Condition::~Condition()
 
 #endif
 }
+
 status_t Condition::wait( Mutex& mutex )
 {
 #if defined(CMAKE_USE_PTHREADS_INIT)
@@ -47,6 +48,29 @@ status_t Condition::wait( Mutex& mutex )
 #endif
 
   return OK;
+}
+
+status_t Condition::waitTimeout( Mutex& mutex, uint32_t timeoutMS)
+{
+  status_t retval = OK;
+  #if defined(CMAKE_USE_PTHREADS_INIT)
+    #define BILLION 1000000000
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    ts.tv_sec += timeoutMS / 1000;
+    ts.tv_nsec += (timeoutMS % 1000) * 1000000;
+    if(ts.tv_nsec > BILLION) {
+      ts.tv_nsec -= BILLION;
+      ts.tv_sec += 1;
+    }
+    retval = -pthread_cond_timedwait( &mVar, &mutex.mMutex, &ts );
+  #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
+    if(SleepConditionVariableCS( &mVar, &mutex.mMutex, timeoutMS )){
+      retval = GetLastError();
+    }
+  #endif
+
+  return retval;
 }
 
 void Condition::signalOne()

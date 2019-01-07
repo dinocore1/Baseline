@@ -41,8 +41,8 @@ class DLL_LOCAL ExecutorServiceImpl : public ExecutorService
 public:
   ExecutorServiceImpl( const String8& name );
 
-  void shutdown();
-  sp<Future> execute( Runnable* task );
+  void shutdown() override;
+  sp<Future> execute( Runnable* task ) override;
   void start();
 
   String8 mName;

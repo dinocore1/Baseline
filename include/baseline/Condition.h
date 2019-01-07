@@ -29,8 +29,17 @@ public:
   Condition();
   ~Condition();
 
+  /**
+   * Blocks until the condition is signaled
+   */
   status_t wait( Mutex& mutex );
-//status_t waitRelative(Mutex& mutex, nsecs_t reltime);
+
+  /**
+   * Blocks until either the condition is signaled
+   * or timeoutMS milliseconds has elapsed.
+   * Returns OK or TIMEOUT if timeout has elapsed
+   */
+  status_t waitTimeout(Mutex& mutex, uint32_t timeoutMS);
 
   /**
    * Signal one thread to wakeup
