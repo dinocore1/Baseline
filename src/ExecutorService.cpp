@@ -53,19 +53,19 @@ public:
 
 };
 
-struct DLL_LOCAL WorkTask : public Future {
+class DLL_LOCAL WorkTask : public Future
+{
+public:
+
+  ExecutorServiceImpl& mExeService;
+  up<Runnable> mRunnable;
+  State mState;
 
   WorkTask( ExecutorServiceImpl& exeService, Runnable* runnable )
     : mExeService( exeService ), mRunnable( runnable ), mState( State::Queued )
   {}
 
   ~WorkTask() {}
-
-
-
-  ExecutorServiceImpl& mExeService;
-  up<Runnable> mRunnable;
-  State mState;
 
   void wait() {
     Mutex::Autolock l( mExeService.mMutex );

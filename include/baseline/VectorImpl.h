@@ -38,10 +38,6 @@ public:
   void finish_vector();
 
   VectorImpl& operator = ( const VectorImpl& rhs );
-  VectorImpl& operator = ( const VectorImpl& rhs ) const {
-    VectorImpl::operator = ( rhs );
-    return *const_cast<VectorImpl*>( this );
-  }
 
   /*! C-style array access */
   inline  const void* arrayImpl() const       {
