@@ -103,6 +103,30 @@ bool LinkedList<T>::empty() const
 }
 
 template<typename T>
+T& LinkedList<T>::head()
+{
+    return mHead->data;
+}
+
+template<typename T>
+const T& LinkedList<T>::head() const
+{
+    return mHead->data;
+}
+
+template<typename T>
+T& LinkedList<T>::tail()
+{
+    return mTail->data;
+}
+
+template<typename T>
+const T& LinkedList<T>::tail() const
+{
+    return mTail->data;
+}
+
+template<typename T>
 void LinkedList<T>::add(const T& item)
 {
     Item* newItem = new Item(item);

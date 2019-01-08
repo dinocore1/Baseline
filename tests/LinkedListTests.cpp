@@ -12,4 +12,5 @@ TEST_CASE("add back to list", "[LinkedList]")
     mylist.add(5);
     REQUIRE(mylist.size() == 1);
     REQUIRE(mylist.head() == 5);
+    REQUIRE(mylist.tail() == 5);
 }
