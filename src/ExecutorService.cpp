@@ -7,7 +7,20 @@
 #include <baseline/Condition.h>
 #include <baseline/UniquePointer.h>
 
+#include <time.h>
+
 namespace baseline {
+
+static
+int64_t getTime()
+{
+  int64_t retval;
+  struct timespec ts;
+  clock_gettime( CLOCK_REALTIME, &ts );
+  retval = ts.tv_sec * 1000;
+  retval += ts.tv_nsec / 1000000;
+  return retval;
+}
 
 enum DLL_LOCAL State {
   Queued,
@@ -43,6 +56,8 @@ public:
 
   void shutdown() override;
   sp<Future> execute( Runnable* task ) override;
+  sp<Future> schedule( Runnable* task, uint32_t delayMS ) override;
+  sp<Future> scheduleWithFixedDelay( Runnable* task, uint32_t delayMS ) override;
   void start();
 
   String8 mName;
@@ -60,12 +75,15 @@ public:
   ExecutorServiceImpl& mExeService;
   up<Runnable> mRunnable;
   State mState;
+  int64_t mExecuteTime;
 
   WorkTask( ExecutorServiceImpl& exeService, Runnable* runnable )
     : mExeService( exeService ), mRunnable( runnable ), mState( State::Queued )
   {}
 
   ~WorkTask() {}
+
+  virtual void run() = 0;
 
   void wait() {
     Mutex::Autolock l( mExeService.mMutex );
@@ -76,12 +94,73 @@ public:
 
   void cancel() {
     Mutex::Autolock l( mExeService.mMutex );
-    if( mState == State::Queued ) {
+    if( mState == State::Queued || mState == State::Running ) {
       mState = State::Canceled;
+      mExeService.mCondition.signalAll();
     }
   }
 };
 
+static
+int taskComparator( const sp<WorkTask>* a, const sp<WorkTask>* b )
+{
+  return a->get()->mExecuteTime - b->get()->mExecuteTime;
+}
+
+class DLL_LOCAL OneTimeTask : public WorkTask
+{
+public:
+
+  OneTimeTask( ExecutorServiceImpl& exeService, Runnable* runnable )
+    : WorkTask( exeService, runnable )
+  {}
+
+  void run() {
+    if( mState == State::Queued ) {
+      mState = State::Running;
+      mExeService.mMutex.unlock();
+      mRunnable->run();
+      mExeService.mMutex.lock();
+      mState = State::Finished;
+    }
+  }
+};
+
+class DLL_LOCAL RepeatTask : public WorkTask
+{
+public:
+
+  RepeatTask( ExecutorServiceImpl& exeService, Runnable* runnable, uint32_t delayMS )
+    : WorkTask( exeService, runnable ), mDelayMS( delayMS )
+  {}
+
+  void run() {
+
+    if( mState == State::Canceled ) {
+      mState = State::Finished;
+      return;
+    }
+
+    if( mState == State::Queued ) {
+      mState = State::Running;
+      mExeService.mMutex.unlock();
+      mRunnable->run();
+      mExeService.mMutex.lock();
+      if( mState == State::Running || mState == State::Queued ) {
+        mExecuteTime = getTime() + mDelayMS;
+        mExeService.mQueue.push_back( this );
+        mExeService.mQueue.sort( taskComparator );
+        mState = State::Queued;
+      }
+    }
+
+
+
+  }
+
+private:
+  uint32_t mDelayMS;
+};
 
 void WorkerThread::run()
 {
@@ -92,17 +171,16 @@ void WorkerThread::run()
       mExeService.mCondition.wait( mExeService.mMutex );
     } else {
       sp<WorkTask> r = mExeService.mQueue[0];
-      mExeService.mQueue.pop();
 
-      if( r->mState == State::Queued ) {
-        r->mState = State::Running;
-        mExeService.mMutex.unlock();
-        r->mRunnable->run();
-        mExeService.mMutex.lock();
-        r->mState = State::Finished;
+      const int64_t now = getTime();
+      int msDelay = r->mExecuteTime - now;
+      if( msDelay <= 0 ) {
+        mExeService.mQueue.pop();
+        r->run();
+        mExeService.mCondition.signalAll();
+      } else {
+        mExeService.mCondition.waitTimeout( mExeService.mMutex, msDelay );
       }
-
-      mExeService.mCondition.signalAll();
 
     }
   }
@@ -139,9 +217,31 @@ void ExecutorServiceImpl::shutdown()
 
 sp<Future> ExecutorServiceImpl::execute( Runnable* runnable )
 {
-  sp<WorkTask> task( new WorkTask( *this, runnable ) );
+  return schedule( runnable, 0 );
+}
+
+sp<Future> ExecutorServiceImpl::schedule( Runnable* runnable, uint32_t delayMS )
+{
+  sp<WorkTask> task( new OneTimeTask( *this, runnable ) );
+  task->mExecuteTime = getTime();
+  task->mExecuteTime += delayMS;
+
   Mutex::Autolock l( mMutex );
   mQueue.push_back( task );
+  mQueue.sort( taskComparator );
+  mCondition.signalOne();
+  return task;
+}
+
+sp<Future> ExecutorServiceImpl::scheduleWithFixedDelay( Runnable* runnable, uint32_t delayMS )
+{
+  sp<WorkTask> task( new RepeatTask( *this, runnable, delayMS ) );
+  task->mExecuteTime = getTime();
+  task->mExecuteTime += delayMS;
+
+  Mutex::Autolock l( mMutex );
+  mQueue.push_back( task );
+  mQueue.sort( taskComparator );
   mCondition.signalOne();
   return task;
 }

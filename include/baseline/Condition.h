@@ -39,7 +39,7 @@ public:
    * or timeoutMS milliseconds has elapsed.
    * Returns OK or TIMEOUT if timeout has elapsed
    */
-  status_t waitTimeout(Mutex& mutex, uint32_t timeoutMS);
+  status_t waitTimeout( Mutex& mutex, uint32_t timeoutMS );
 
   /**
    * Signal one thread to wakeup

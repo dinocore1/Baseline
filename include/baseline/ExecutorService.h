@@ -44,8 +44,25 @@ public:
 
   static sp<ExecutorService> createSingleThread( const String8& name );
 
+  /**
+   * shutdown the ExecutorService and block until all worker threads have terminated
+   */
   virtual void shutdown() = 0;
+
+  /**
+   * execute a one-time
+   */
   virtual sp<Future> execute( Runnable* ) = 0;
+
+  /**
+   * schedule one-time task to run in the future
+   */
+  virtual sp<Future> schedule( Runnable*, uint32_t delayMS ) = 0;
+
+  /**
+   * schedule a re-occuring task to with a fixed delay between execution
+   */
+  virtual sp<Future> scheduleWithFixedDelay( Runnable*, uint32_t delayMS ) = 0;
 
 };
 

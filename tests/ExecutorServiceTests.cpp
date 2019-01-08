@@ -6,7 +6,8 @@
 
 using namespace baseline;
 
-TEST_CASE( "runs tasks", "[ExecutorService]" )
+
+TEST_CASE( "one-time runs tasks", "[ExecutorService]" )
 {
   static int count = 0;
   class MyRunnable : public Runnable
@@ -22,5 +23,32 @@ TEST_CASE( "runs tasks", "[ExecutorService]" )
   f->wait();
 
   REQUIRE( count == 1 );
+  exe->shutdown();
+}
+
+
+TEST_CASE( "repeating runs tasks", "[ExecutorService]" )
+{
+  static int count = 0;
+  static sp<Future> f;
+  sp<ExecutorService> exe = ExecutorService::createSingleThread( String8( "exe" ) );
+
+  class MyRunnable : public Runnable
+  {
+  public:
+    ~MyRunnable() {}
+    void run() {
+      count++;
+      if( count == 5 ) {
+        f->cancel();
+      }
+    }
+  };
+
+
+  f = exe->scheduleWithFixedDelay( new MyRunnable, 500 );
+  f->wait();
+
+  REQUIRE( count == 5 );
   exe->shutdown();
 }
