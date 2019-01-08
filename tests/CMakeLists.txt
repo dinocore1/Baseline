@@ -13,6 +13,10 @@ add_executable(VectorTests VectorTests.cpp)
 target_link_libraries(VectorTests baseline)
 add_test(VectorTests VectorTests)
 
+add_executable(LinkedListTests LinkedListTests.cpp)
+target_link_libraries(LinkedListTests baseline)
+add_test(LinkedListTests LinkedListTests)
+
 add_executable(PointerTests PointerTests.cpp)
 target_link_libraries(PointerTests baseline)
 add_test(PointerTests PointerTests)
