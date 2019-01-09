@@ -175,7 +175,7 @@ void WorkerThread::run()
       const int64_t now = getTime();
       int msDelay = r->mExecuteTime - now;
       if( msDelay <= 0 ) {
-        mExeService.mQueue.pop();
+        mExeService.mQueue.removeAt(0);
         r->run();
         mExeService.mCondition.signalAll();
       } else {
