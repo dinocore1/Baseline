@@ -44,7 +44,7 @@ TEST_CASE( "condition var timeout returns TIMED_OUT", "[Condition]" )
   Condition condition;
 
   Mutex::Autolock l( mutex );
-  status_t retval = condition.waitTimeout( mutex, 500 );
+  status_t retval = condition.waitTimeout( mutex, 100 );
 
   REQUIRE( retval == TIMED_OUT );
 }

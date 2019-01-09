@@ -46,7 +46,7 @@ TEST_CASE( "repeating runs tasks", "[ExecutorService]" )
   };
 
 
-  f = exe->scheduleWithFixedDelay( new MyRunnable, 500 );
+  f = exe->scheduleWithFixedDelay( new MyRunnable, 100 );
   f->wait();
 
   REQUIRE( count == 5 );
