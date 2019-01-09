@@ -8,6 +8,15 @@
 
 using namespace baseline;
 
+TEST_CASE( "mutex is reentrant", "[Mutex]")
+{
+  Mutex m;
+  m.lock();
+  m.lock();
+  m.unlock();
+  m.unlock();
+}
+
 TEST_CASE( "thread runs", "[Thread]" )
 {
 
