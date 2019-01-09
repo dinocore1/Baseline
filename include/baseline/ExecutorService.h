@@ -45,7 +45,7 @@ public:
   static sp<ExecutorService> createSingleThread( const String8& name );
 
   /**
-   * shutdown the ExecutorService and block until all worker threads have terminated
+   * Cancels and queued tasks and waits for any currently running tasks to finish.
    */
   virtual void shutdown() = 0;
 

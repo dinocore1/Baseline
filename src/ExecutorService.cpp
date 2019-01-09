@@ -205,6 +205,14 @@ void ExecutorServiceImpl::shutdown()
 {
   {
     Mutex::Autolock l( mMutex );
+
+    while(!mQueue.isEmpty()) {
+      sp<WorkTask> task = mQueue[0];
+      mQueue.pop();
+      task->cancel();
+      task->wait();
+    }
+
     if( mThread->mRunning ) {
       mThread->mRunning = false;
       mCondition.signalAll();
