@@ -3,6 +3,27 @@
 
 #include <log/log.h>
 
+//use Android's utils
+#define BASELINE_STRONGPOINTER_H_
+#define BASELINE_REFBASE_H_
+#define BASELINE_TYPEHELPERS_H_
+#define BASELINE_STRING8_H_
+#define BASELINE_STRING16_H_
+#define BASELINE_VECTOR_H_
+#define BASELINE_VECTORIMPL_H_
+#define BASELINE_DEBUG_H_
+#define BASELINE_TEXTOUTPUT_H_
+#include <utils/TypeHelpers.h>
+#include <utils/String8.h>
+#include <utils/RefBase.h>
+#include <utils/StrongPointer.h>
+#include <utils/Vector.h>
+#include <utils/VectorImpl.h>
+#include <utils/Debug.h>
+
+
+using namespace android;
+
 #ifdef WIN32
   #define WIN32_LEAN_AND_MEAN
   #include <windows.h>

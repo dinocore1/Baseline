@@ -8,19 +8,10 @@ cc_library {
     srcs: [
         "src/Atomic.cpp",
         "src/Condition.cpp",
-        "src/Debug.cpp",
         "src/ExecutorService.cpp",
         "src/MathUtils.cpp",
         "src/Mutex.cpp",
-        "src/RefBase.cpp",
-        "src/SharedBuffer.cpp",
-        "src/Static.cpp",
-        "src/String8.cpp",
-        "src/String16.cpp",
-        "src/TextOutput.cpp",
         "src/Thread.cpp",
-        "src/Unicode.cpp",
-        "src/VectorImpl.cpp",
     ],
 
     cflags: [
@@ -32,6 +23,7 @@ cc_library {
 
     shared_libs: [
         "liblog",
+        "libutils",
     ]
 
 }
