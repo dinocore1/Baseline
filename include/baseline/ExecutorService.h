@@ -24,7 +24,7 @@
 
 namespace baseline {
 
-class Runnable
+class Runnable : public RefBase
 {
 public:
   virtual ~Runnable() {};
@@ -52,17 +52,17 @@ public:
   /**
    * execute a one-time
    */
-  virtual sp<Future> execute( Runnable* ) = 0;
+  virtual sp<Future> execute( const sp<Runnable>& ) = 0;
 
   /**
    * schedule one-time task to run in the future
    */
-  virtual sp<Future> schedule( Runnable*, uint32_t delayMS ) = 0;
+  virtual sp<Future> schedule( const sp<Runnable>&, uint32_t delayMS ) = 0;
 
   /**
    * schedule a re-occuring task to with a fixed delay between execution
    */
-  virtual sp<Future> scheduleWithFixedDelay( Runnable*, uint32_t delayMS ) = 0;
+  virtual sp<Future> scheduleWithFixedDelay( const sp<Runnable>&, uint32_t delayMS ) = 0;
 
 };
 

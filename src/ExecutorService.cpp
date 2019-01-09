@@ -55,9 +55,9 @@ public:
   ExecutorServiceImpl( const String8& name );
 
   void shutdown() override;
-  sp<Future> execute( Runnable* task ) override;
-  sp<Future> schedule( Runnable* task, uint32_t delayMS ) override;
-  sp<Future> scheduleWithFixedDelay( Runnable* task, uint32_t delayMS ) override;
+  sp<Future> execute( const sp<Runnable>& task ) override;
+  sp<Future> schedule( const sp<Runnable>& task, uint32_t delayMS ) override;
+  sp<Future> scheduleWithFixedDelay( const sp<Runnable>& task, uint32_t delayMS ) override;
   void start();
 
   String8 mName;
@@ -73,11 +73,11 @@ class DLL_LOCAL WorkTask : public Future
 public:
 
   ExecutorServiceImpl& mExeService;
-  up<Runnable> mRunnable;
+  sp<Runnable> mRunnable;
   State mState;
   int64_t mExecuteTime;
 
-  WorkTask( ExecutorServiceImpl& exeService, Runnable* runnable )
+  WorkTask( ExecutorServiceImpl& exeService, const sp<Runnable>& runnable )
     : mExeService( exeService ), mRunnable( runnable ), mState( State::Queued )
   {}
 
@@ -111,7 +111,7 @@ class DLL_LOCAL OneTimeTask : public WorkTask
 {
 public:
 
-  OneTimeTask( ExecutorServiceImpl& exeService, Runnable* runnable )
+  OneTimeTask( ExecutorServiceImpl& exeService, const sp<Runnable>& runnable )
     : WorkTask( exeService, runnable )
   {}
 
@@ -130,7 +130,7 @@ class DLL_LOCAL RepeatTask : public WorkTask
 {
 public:
 
-  RepeatTask( ExecutorServiceImpl& exeService, Runnable* runnable, uint32_t delayMS )
+  RepeatTask( ExecutorServiceImpl& exeService, const sp<Runnable>& runnable, uint32_t delayMS )
     : WorkTask( exeService, runnable ), mDelayMS( delayMS )
   {}
 
@@ -215,12 +215,12 @@ void ExecutorServiceImpl::shutdown()
   mThread->join();
 }
 
-sp<Future> ExecutorServiceImpl::execute( Runnable* runnable )
+sp<Future> ExecutorServiceImpl::execute( const sp<Runnable>& runnable )
 {
   return schedule( runnable, 0 );
 }
 
-sp<Future> ExecutorServiceImpl::schedule( Runnable* runnable, uint32_t delayMS )
+sp<Future> ExecutorServiceImpl::schedule( const sp<Runnable>& runnable, uint32_t delayMS )
 {
   sp<WorkTask> task( new OneTimeTask( *this, runnable ) );
   task->mExecuteTime = getTime();
@@ -233,7 +233,7 @@ sp<Future> ExecutorServiceImpl::schedule( Runnable* runnable, uint32_t delayMS )
   return task;
 }
 
-sp<Future> ExecutorServiceImpl::scheduleWithFixedDelay( Runnable* runnable, uint32_t delayMS )
+sp<Future> ExecutorServiceImpl::scheduleWithFixedDelay( const sp<Runnable>& runnable, uint32_t delayMS )
 {
   sp<WorkTask> task( new RepeatTask( *this, runnable, delayMS ) );
   task->mExecuteTime = getTime();
