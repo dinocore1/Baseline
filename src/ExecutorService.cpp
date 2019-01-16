@@ -15,10 +15,14 @@ static
 int64_t getTime()
 {
   int64_t retval;
+#ifdef WIN32
+  retval = GetTickCount64();
+#else
   struct timespec ts;
   clock_gettime( CLOCK_MONOTONIC, &ts );
   retval = ts.tv_sec * 1000;
   retval += ts.tv_nsec / 1000000;
+#endif
   return retval;
 }
 
