@@ -16,7 +16,7 @@ int64_t getTime()
 {
   int64_t retval;
   struct timespec ts;
-  clock_gettime( CLOCK_REALTIME, &ts );
+  clock_gettime( CLOCK_MONOTONIC, &ts );
   retval = ts.tv_sec * 1000;
   retval += ts.tv_nsec / 1000000;
   return retval;
