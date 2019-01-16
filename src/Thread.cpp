@@ -23,6 +23,8 @@
 
 #ifdef WIN32
   #include <process.h>
+#else
+  #include <unistd.h>
 #endif
 
 #if defined(CMAKE_USE_PTHREADS_INIT)
@@ -115,6 +117,16 @@ status_t Thread::join()
   }
 
   return OK;
+}
+
+void Thread::sleep(uint32_t millisec)
+{
+#ifdef WIN32
+	Sleep(millisec);
+#else
+	usleep(millisec * 1000);
+#endif
+
 }
 
 

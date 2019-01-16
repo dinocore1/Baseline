@@ -59,7 +59,7 @@ TEST_CASE( "condition var timeout return OK when signaled before timeout", "[Con
   {
   public:
     void run() {
-      sleep( 1 );
+      Thread::sleep(1000);
       Mutex::Autolock l( mutex );
       condition.signalOne();
     }
