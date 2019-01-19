@@ -29,18 +29,18 @@ TEST_CASE( "thread runs", "[Thread]" )
 
 }
 
-TEST_CASE( "condition var timeout returns TIMED_OUT", "[Condition]")
+TEST_CASE( "condition var timeout returns TIMED_OUT", "[Condition]" )
 {
   Mutex mutex;
   Condition condition;
 
   Mutex::Autolock l( mutex );
-  status_t retval = condition.waitTimeout(mutex, 500);
+  status_t retval = condition.waitTimeout( mutex, 500 );
 
   REQUIRE( retval == TIMED_OUT );
 }
 
-TEST_CASE( "condition var timeout return OK when signaled before timeout", "[Condition]")
+TEST_CASE( "condition var timeout return OK when signaled before timeout", "[Condition]" )
 {
   static Mutex mutex;
   static Condition condition;
@@ -50,7 +50,7 @@ TEST_CASE( "condition var timeout return OK when signaled before timeout", "[Con
   {
   public:
     void run() {
-      sleep(1);
+      sleep( 1 );
       Mutex::Autolock l( mutex );
       condition.signalOne();
     }
@@ -61,7 +61,7 @@ TEST_CASE( "condition var timeout return OK when signaled before timeout", "[Con
 
   {
     Mutex::Autolock l( mutex );
-    retval = condition.waitTimeout(mutex, 20000);
+    retval = condition.waitTimeout( mutex, 20000 );
   }
 
   t->join();
