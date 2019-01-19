@@ -4,6 +4,8 @@
 #include <baseline/Baseline.h>
 #include <baseline/Atomic.h>
 #include <baseline/CircleBuffer.h>
+#include <baseline/Streams.h>
+#include <baseline/SharedBuffer.h>
 
 using namespace baseline;
 
@@ -48,4 +50,33 @@ TEST_CASE( "atomic dec", "[Atomic]" )
   int32_t value = 0;
   REQUIRE( atomic_dec( &value ) == 0 );
   REQUIRE( value == -1 );
+}
+
+TEST_CASE( "ByteArrayOutputStream has correct data", "[ByteArrayOutputStream]" )
+{
+  ByteArrayOutputStream out( 4 );
+  uint8_t buf[32];
+
+  buf[0] = 'a';
+  buf[1] = 'b';
+  buf[2] = 'c';
+
+  REQUIRE( out.size() == 0 );
+  REQUIRE( out.write( buf, 0, 3 ) == 3 );
+  REQUIRE( out.size() == 3 );
+
+  buf[1] = 'd';
+  buf[2] = 'e';
+  buf[3] = 'f';
+
+  out.write( buf, 1, 3 );
+
+  const uint8_t* buf2 = ( const uint8_t* )out.toSharedBuffer();
+  REQUIRE( buf2[0] == 'a' );
+  REQUIRE( buf2[1] == 'b' );
+  REQUIRE( buf2[2] == 'c' );
+  REQUIRE( buf2[3] == 'd' );
+  REQUIRE( buf2[4] == 'e' );
+  REQUIRE( buf2[5] == 'f' );
+
 }

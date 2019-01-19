@@ -34,6 +34,7 @@ list(APPEND Baseline_SRCS
   src/RefBase.cpp
   src/SharedBuffer.cpp
   src/Static.cpp
+  src/Streams.cpp
   src/String8.cpp
   src/String16.cpp
   src/TextOutput.cpp
