@@ -19,26 +19,13 @@
 #include "catch.hpp"
 
 #include <baseline/Baseline.h>
-#include <baseline/TypeHelpers.h>
+#include <baseline/Log.h>
 
 using namespace baseline;
 
-TEST_CASE( "struct is pointer", "[TypeHelpers]" )
+#define LOG_TAG "testing"
+
+TEST_CASE( "log to stdout works", "[Logging]" )
 {
-
-  struct A {};
-
-  REQUIRE( trait_pointer<A>::value == false );
-  REQUIRE( trait_pointer<A*>::value == true );
-  REQUIRE( trait_pointer<A**>::value == true );
-
-}
-
-TEST_CASE( "trivial triats", "[TypeHelpers]" )
-{
-
-  struct A {};
-
-  REQUIRE( traits<A*>::is_pointer == true );
-  REQUIRE( traits<A*>::has_trivial_ctor == true );
+  LOG_INFO( LOG_TAG, "my message: %d %s", 5, "stuff" );
 }

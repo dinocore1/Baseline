@@ -15,30 +15,44 @@
  *
  */
 
-#define CATCH_CONFIG_MAIN
-#include "catch.hpp"
-
 #include <baseline/Baseline.h>
-#include <baseline/TypeHelpers.h>
+#include <baseline/Log.h>
 
-using namespace baseline;
+#include <cstdio>
 
-TEST_CASE( "struct is pointer", "[TypeHelpers]" )
+#define LOG_LINE_SIZE 1024
+
+namespace baseline {
+
+LogLevel gLogLevel = LogLevel::Info;
+logfunction_t gLogFunction = stdOutLogFunction;
+
+void setLogLevel( LogLevel level )
 {
-
-  struct A {};
-
-  REQUIRE( trait_pointer<A>::value == false );
-  REQUIRE( trait_pointer<A*>::value == true );
-  REQUIRE( trait_pointer<A**>::value == true );
-
+  gLogLevel = level;
 }
 
-TEST_CASE( "trivial triats", "[TypeHelpers]" )
+void setLogFunction( logfunction_t f )
 {
-
-  struct A {};
-
-  REQUIRE( traits<A*>::is_pointer == true );
-  REQUIRE( traits<A*>::has_trivial_ctor == true );
+  gLogFunction = f;
 }
+
+void stdOutLogFunction( const char* format, va_list args )
+{
+  vfprintf( stderr, format, args );
+}
+
+void log( LogLevel level, const char* format, ... )
+{
+  va_list args;
+  va_start( args, format );
+
+
+  if( level >= gLogLevel ) {
+    gLogFunction( format, args );
+  }
+
+  va_end( args );
+}
+
+} // namespace

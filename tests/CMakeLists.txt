@@ -21,6 +21,10 @@ add_executable(TypeHelperTests TypeHelperTests.cpp)
 target_link_libraries(TypeHelperTests baseline)
 add_test(TypeHelperTests TypeHelperTests)
 
+add_executable(LoggingTests LoggingTests.cpp)
+target_link_libraries(LoggingTests baseline)
+add_test(LoggingTests LoggingTests)
+
 if(BASELINE_THREAD_SUPPORT)
   add_executable(ThreadTests ThreadTests.cpp)
   target_link_libraries(ThreadTests baseline)

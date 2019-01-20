@@ -19,10 +19,8 @@
 // All static variables go here, to control initialization and
 // destruction order in the library.
 
+#include <baseline/Baseline.h>
 #include "Static.h"
-
-//#include <utils/BufferedTextOutput.h>
-#include <baseline/Log.h>
 
 namespace baseline {
 
