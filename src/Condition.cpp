@@ -67,9 +67,9 @@ status_t Condition::waitTimeout( Mutex& mutex, uint32_t timeoutMS )
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
   if( SleepConditionVariableCS( &mVar, &mutex.mMutex, timeoutMS ) == 0 ) {
     retval = GetLastError();
-	if (retval == ERROR_TIMEOUT) {
-		return TIMED_OUT;
-	}
+    if( retval == ERROR_TIMEOUT ) {
+      return TIMED_OUT;
+    }
   }
 #endif
 

@@ -42,10 +42,10 @@ class ExecutorService : public RefBase
 {
 public:
 
-  static sp<ExecutorService> createExecutorService(const String8& name, int numThreads = 1);
+  static sp<ExecutorService> createExecutorService( const String8& name, int numThreads = 1 );
 
-  static inline sp<ExecutorService> createSingleThreadedExecutorService(const String8& name) {
-	  return createExecutorService(name, 1);
+  static inline sp<ExecutorService> createSingleThreadedExecutorService( const String8& name ) {
+    return createExecutorService( name, 1 );
   }
 
   /**

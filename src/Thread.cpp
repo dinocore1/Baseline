@@ -119,12 +119,12 @@ status_t Thread::join()
   return OK;
 }
 
-void Thread::sleep(uint32_t millisec)
+void Thread::sleep( uint32_t millisec )
 {
 #ifdef WIN32
-	Sleep(millisec);
+  Sleep( millisec );
 #else
-	usleep(millisec * 1000);
+  usleep( millisec * 1000 );
 #endif
 
 }

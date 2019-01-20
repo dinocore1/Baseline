@@ -43,18 +43,18 @@ int64_t getTime()
   return retval;
 }
 
-enum DLL_LOCAL struct TaskState {
+enum struct DLL_LOCAL TaskState {
   Queued,
   Running,
   Canceled,
   Finished
 };
 
-enum DLL_LOCAL struct ExecutorState {
-	Ready,
-	Running,
-	ShuttingDown,
-	Stopped
+enum struct DLL_LOCAL ExecutorState {
+  Ready,
+  Running,
+  ShuttingDown,
+  Stopped
 };
 
 void Future::wait()
@@ -194,7 +194,7 @@ void WorkerThread::run()
 {
   Mutex::Autolock l( mExeService.mMutex );
 
-  while(mExeService.mState == ExecutorState::Running) {
+  while( mExeService.mState == ExecutorState::Running ) {
     if( mExeService.mQueue.isEmpty() ) {
       mExeService.mCondition.waitTimeout( mExeService.mMutex, 500 );
     } else {
@@ -203,7 +203,7 @@ void WorkerThread::run()
       const int64_t now = getTime();
       int msDelay = r->mExecuteTime - now;
       if( msDelay <= 0 ) {
-        mExeService.mQueue.removeAt(0);
+        mExeService.mQueue.removeAt( 0 );
         r->run();
         mExeService.mCondition.signalAll();
       } else {
@@ -217,61 +217,61 @@ void WorkerThread::run()
 
 
 ExecutorServiceImpl::ExecutorServiceImpl( const String8& name, int numThreads )
-  : mName( name ), mState(ExecutorState::Ready)
+  : mName( name ), mState( ExecutorState::Ready )
 {
   mQueue.setCapacity( 10 );
-  mThreads.setCapacity(numThreads);
-  for (int i = 0; i < numThreads; i++) {
-	  mThreads.add(new WorkerThread(*this));
+  mThreads.setCapacity( numThreads );
+  for( int i = 0; i < numThreads; i++ ) {
+    mThreads.add( new WorkerThread( *this ) );
   }
 }
 
 void ExecutorServiceImpl::start()
 {
   Mutex::Autolock l( mMutex );
-  if (mState != ExecutorState::Ready) {
-	  LOG_ERROR("ExecutorService", "not in Ready state");
-	  return;
+  if( mState != ExecutorState::Ready ) {
+    LOG_ERROR( "ExecutorService", "not in Ready state" );
+    return;
   }
 
   mState = ExecutorState::Running;
 
-  for (int i = 0; i < mThreads.size(); i++) {
-	  mThreads[i]->start();
+  for( int i = 0; i < mThreads.size(); i++ ) {
+    mThreads[i]->start();
   }
-  
+
 }
 
 void ExecutorServiceImpl::shutdown()
 {
   {
     Mutex::Autolock l( mMutex );
-	if (mState != ExecutorState::Running) {
-		LOG_ERROR("ExecutorService", "not in running state");
-		return;
-	}
+    if( mState != ExecutorState::Running ) {
+      LOG_ERROR( "ExecutorService", "not in running state" );
+      return;
+    }
 
-	mState = ExecutorState::ShuttingDown;
+    mState = ExecutorState::ShuttingDown;
 
-    while(!mQueue.isEmpty()) {
+    while( !mQueue.isEmpty() ) {
       sp<WorkTask> task = mQueue[0];
       mQueue.pop();
       task->cancel();
       task->wait();
     }
 
-	mCondition.signalAll();
+    mCondition.signalAll();
 
-	
+
   }
 
-  for (int i = 0; i < mThreads.size(); i++) {
-	  mThreads[i]->join();
+  for( int i = 0; i < mThreads.size(); i++ ) {
+    mThreads[i]->join();
   }
 
   {
-	  Mutex::Autolock l(mMutex);
-	  mState = ExecutorState::Stopped;
+    Mutex::Autolock l( mMutex );
+    mState = ExecutorState::Stopped;
   }
 }
 
@@ -282,10 +282,10 @@ sp<Future> ExecutorServiceImpl::execute( const sp<Runnable>& runnable )
 
 sp<Future> ExecutorServiceImpl::schedule( const sp<Runnable>& runnable, uint32_t delayMS )
 {
-	if (mState != ExecutorState::Running) {
-		LOG_ERROR("ExecutorService", "not in running state");
-		return nullptr;
-	}
+  if( mState != ExecutorState::Running ) {
+    LOG_ERROR( "ExecutorService", "not in running state" );
+    return nullptr;
+  }
   sp<WorkTask> task( new OneTimeTask( *this, runnable ) );
   task->mExecuteTime = getTime();
   task->mExecuteTime += delayMS;
@@ -299,10 +299,10 @@ sp<Future> ExecutorServiceImpl::schedule( const sp<Runnable>& runnable, uint32_t
 
 sp<Future> ExecutorServiceImpl::scheduleWithFixedDelay( const sp<Runnable>& runnable, uint32_t delayMS )
 {
-	if (mState != ExecutorState::Running) {
-		LOG_ERROR("ExecutorService", "not in running state");
-		return nullptr;
-	}
+  if( mState != ExecutorState::Running ) {
+    LOG_ERROR( "ExecutorService", "not in running state" );
+    return nullptr;
+  }
   sp<WorkTask> task( new RepeatTask( *this, runnable, delayMS ) );
   task->mExecuteTime = getTime();
   task->mExecuteTime += delayMS;

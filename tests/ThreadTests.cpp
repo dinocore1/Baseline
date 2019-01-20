@@ -25,7 +25,7 @@
 
 using namespace baseline;
 
-TEST_CASE( "mutex is reentrant", "[Mutex]")
+TEST_CASE( "mutex is reentrant", "[Mutex]" )
 {
   Mutex m;
   m.lock();
@@ -75,7 +75,7 @@ TEST_CASE( "condition var timeout return OK when signaled before timeout", "[Con
   {
   public:
     void run() {
-      Thread::sleep(1000);
+      Thread::sleep( 1000 );
       Mutex::Autolock l( mutex );
       condition.signalOne();
     }

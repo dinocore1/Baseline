@@ -25,7 +25,7 @@ Mutex::Mutex()
 {
 #if defined(CMAKE_USE_PTHREADS_INIT)
   pthread_mutexattr_t type;
-  pthread_mutexattr_settype(&type, PTHREAD_MUTEX_RECURSIVE);
+  pthread_mutexattr_settype( &type, PTHREAD_MUTEX_RECURSIVE );
   pthread_mutex_init( &mMutex, &type );
 #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
   InitializeCriticalSection( &mMutex );
