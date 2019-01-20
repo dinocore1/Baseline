@@ -43,14 +43,14 @@ int64_t getTime()
   return retval;
 }
 
-enum DLL_LOCAL TaskState {
+enum DLL_LOCAL struct TaskState {
   Queued,
   Running,
   Canceled,
   Finished
 };
 
-enum DLL_LOCAL ExecutorState {
+enum DLL_LOCAL struct ExecutorState {
 	Ready,
 	Running,
 	ShuttingDown,
@@ -74,7 +74,6 @@ public:
   void run();
 
   ExecutorServiceImpl& mExeService;
-  bool mRunning;
 };
 
 class DLL_LOCAL ExecutorServiceImpl : public ExecutorService
@@ -195,7 +194,7 @@ void WorkerThread::run()
 {
   Mutex::Autolock l( mExeService.mMutex );
 
-  while( mRunning ) {
+  while(mExeService.mState == ExecutorState::Running) {
     if( mExeService.mQueue.isEmpty() ) {
       mExeService.mCondition.waitTimeout( mExeService.mMutex, 500 );
     } else {
@@ -234,11 +233,13 @@ void ExecutorServiceImpl::start()
 	  LOG_ERROR("ExecutorService", "not in Ready state");
 	  return;
   }
+
+  mState = ExecutorState::Running;
+
   for (int i = 0; i < mThreads.size(); i++) {
-	  mThreads[i]->mRunning = true;
 	  mThreads[i]->start();
   }
-  mState = ExecutorState::Running;
+  
 }
 
 void ExecutorServiceImpl::shutdown()
@@ -259,16 +260,19 @@ void ExecutorServiceImpl::shutdown()
       task->wait();
     }
 
-	for (int i = 0; i < mThreads.size(); i++) {
-		if (mThreads[i]->mRunning) {
-			mThreads[i]->mRunning = false;
-			mCondition.signalAll();
-			mThreads[i]->join();
-		}
-	}
+	mCondition.signalAll();
+
+	
   }
 
-  mState = ExecutorState::Stopped;
+  for (int i = 0; i < mThreads.size(); i++) {
+	  mThreads[i]->join();
+  }
+
+  {
+	  Mutex::Autolock l(mMutex);
+	  mState = ExecutorState::Stopped;
+  }
 }
 
 sp<Future> ExecutorServiceImpl::execute( const sp<Runnable>& runnable )
