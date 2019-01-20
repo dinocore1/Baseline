@@ -23,6 +23,8 @@
 
 #ifdef WIN32
   #include <process.h>
+#else
+  #include <unistd.h>
 #endif
 
 #if defined(CMAKE_USE_PTHREADS_INIT)
@@ -111,10 +113,20 @@ status_t Thread::join()
   ThreadData* data = toThreadData( mData );
   Mutex::Autolock l( data->mLock );
   while( data->mRunning ) {
-    data->mThreadExitedCondition.wait( data->mLock );
+    data->mThreadExitedCondition.waitTimeout( data->mLock, 500 );
   }
 
   return OK;
+}
+
+void Thread::sleep( uint32_t millisec )
+{
+#ifdef WIN32
+  Sleep( millisec );
+#else
+  usleep( millisec * 1000 );
+#endif
+
 }
 
 

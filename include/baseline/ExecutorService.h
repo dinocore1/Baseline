@@ -24,7 +24,7 @@
 
 namespace baseline {
 
-class Runnable
+class Runnable : public RefBase
 {
 public:
   virtual ~Runnable() {};
@@ -42,10 +42,31 @@ class ExecutorService : public RefBase
 {
 public:
 
-  static sp<ExecutorService> createSingleThread( const String8& name );
+  static sp<ExecutorService> createExecutorService( const String8& name, int numThreads = 1 );
 
+  static inline sp<ExecutorService> createSingleThreadedExecutorService( const String8& name ) {
+    return createExecutorService( name, 1 );
+  }
+
+  /**
+   * Cancels and queued tasks and waits for any currently running tasks to finish.
+   */
   virtual void shutdown() = 0;
-  virtual sp<Future> execute( Runnable* ) = 0;
+
+  /**
+   * execute a one-time
+   */
+  virtual sp<Future> execute( const sp<Runnable>& ) = 0;
+
+  /**
+   * schedule one-time task to run in the future
+   */
+  virtual sp<Future> schedule( const sp<Runnable>&, uint32_t delayMS ) = 0;
+
+  /**
+   * schedule a re-occuring task to with a fixed delay between execution
+   */
+  virtual sp<Future> scheduleWithFixedDelay( const sp<Runnable>&, uint32_t delayMS ) = 0;
 
 };
 

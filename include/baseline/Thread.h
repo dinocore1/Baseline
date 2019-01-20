@@ -33,6 +33,8 @@ public:
   status_t start();
   status_t join();
 
+  static void sleep( uint32_t millisec );
+
 private:
   void* mData;
 };
