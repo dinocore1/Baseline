@@ -28,6 +28,14 @@ ByteArrayOutputStream::ByteArrayOutputStream( size_t size )
   mBuffer = SharedBuffer::alloc( size );
 }
 
+ByteArrayOutputStream::~ByteArrayOutputStream()
+{
+  if( mBuffer != nullptr ) {
+    LOG_WARN( "ByteArrayOutputStream", "destory without calling close first" );
+    close();
+  }
+}
+
 size_t ByteArrayOutputStream::size() const
 {
   return mSize;

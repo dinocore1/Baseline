@@ -69,6 +69,7 @@ class ByteArrayOutputStream : public OutputStream
 public:
 
   ByteArrayOutputStream( size_t size = 1024 );
+  ~ByteArrayOutputStream();
 
   /**
    * Return the current size of the buffer
