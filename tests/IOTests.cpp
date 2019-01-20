@@ -96,4 +96,6 @@ TEST_CASE( "ByteArrayOutputStream has correct data", "[ByteArrayOutputStream]" )
   REQUIRE( buf2[4] == 'e' );
   REQUIRE( buf2[5] == 'f' );
 
+  out.close();
+
 }

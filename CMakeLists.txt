@@ -30,6 +30,7 @@ list(APPEND Baseline_SRCS
   src/Atomic.cpp
   src/Debug.cpp
   src/ExecutorService.cpp
+  src/Log.cpp
   src/MathUtils.cpp
   src/RefBase.cpp
   src/SharedBuffer.cpp

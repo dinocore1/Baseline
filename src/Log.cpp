@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007 The Android Open Source Project
+ * Copyright (C) 2018 Baseline
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,34 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Modifications by Paul Soucy copyright (C) 2018
  */
 
-// All static variables go here, to control initialization and
-// destruction order in the library.
-
 #include <baseline/Baseline.h>
-#include "Static.h"
+#include <baseline/Log.h>
+
+#include <cstdio>
+
+#define LOG_LINE_SIZE 1024
 
 namespace baseline {
 
-class LibUtilsFirstStatics
+LogLevel gLogLevel = LogLevel::Info;
+logfunction_t gLogFunction = stdOutLogFunction;
+
+void setLogLevel( LogLevel level )
 {
-public:
-  LibUtilsFirstStatics() {
-    initialize_string8();
-    initialize_string16();
-  }
-
-  ~LibUtilsFirstStatics() {
-    terminate_string16();
-    terminate_string8();
-  }
-};
-
-static LibUtilsFirstStatics gFirstStatics;
-int gDarwinCantLoadAllObjects = 1;
-
-
-
+  gLogLevel = level;
 }
+
+void setLogFunction( logfunction_t f )
+{
+  gLogFunction = f;
+}
+
+void stdOutLogFunction( const char* format, va_list args )
+{
+  vfprintf( stderr, format, args );
+}
+
+void log( LogLevel level, const char* format, ... )
+{
+  va_list args;
+  va_start( args, format );
+
+
+  if( level >= gLogLevel ) {
+    gLogFunction( format, args );
+  }
+
+  va_end( args );
+}
+
+} // namespace
