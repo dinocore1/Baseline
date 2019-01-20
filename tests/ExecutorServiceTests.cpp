@@ -1,4 +1,4 @@
-#define CATCH_CONFIG_MAIN
+ #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
 #include <baseline/Baseline.h>
@@ -18,7 +18,7 @@ TEST_CASE( "one-time runs tasks", "[ExecutorService]" )
       count++;
     }
   };
-  sp<ExecutorService> exe = ExecutorService::createSingleThread( String8( "exe" ) );
+  sp<ExecutorService> exe = ExecutorService::createSingleThreadedExecutorService( String8( "exe" ) );
   sp<Future> f = exe->execute( new MyRunnable );
   f->wait();
 
@@ -31,7 +31,7 @@ TEST_CASE( "repeating runs tasks", "[ExecutorService]" )
 {
   static int count = 0;
   static sp<Future> f;
-  sp<ExecutorService> exe = ExecutorService::createSingleThread( String8( "exe" ) );
+  sp<ExecutorService> exe = ExecutorService::createSingleThreadedExecutorService( String8( "exe" ) );
 
   class MyRunnable : public Runnable
   {

@@ -113,7 +113,7 @@ status_t Thread::join()
   ThreadData* data = toThreadData( mData );
   Mutex::Autolock l( data->mLock );
   while( data->mRunning ) {
-    data->mThreadExitedCondition.wait( data->mLock );
+    data->mThreadExitedCondition.waitTimeout( data->mLock, 500 );
   }
 
   return OK;

@@ -42,7 +42,11 @@ class ExecutorService : public RefBase
 {
 public:
 
-  static sp<ExecutorService> createSingleThread( const String8& name );
+  static sp<ExecutorService> createExecutorService(const String8& name, int numThreads = 1);
+
+  static inline sp<ExecutorService> createSingleThreadedExecutorService(const String8& name) {
+	  return createExecutorService(name, 1);
+  }
 
   /**
    * Cancels and queued tasks and waits for any currently running tasks to finish.

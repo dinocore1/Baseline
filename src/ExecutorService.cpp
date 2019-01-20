@@ -26,11 +26,18 @@ int64_t getTime()
   return retval;
 }
 
-enum DLL_LOCAL State {
+enum DLL_LOCAL TaskState {
   Queued,
   Running,
   Canceled,
   Finished
+};
+
+enum DLL_LOCAL ExecutorState {
+	Ready,
+	Running,
+	ShuttingDown,
+	Stopped
 };
 
 void Future::wait()
@@ -56,7 +63,7 @@ public:
 class DLL_LOCAL ExecutorServiceImpl : public ExecutorService
 {
 public:
-  ExecutorServiceImpl( const String8& name );
+  ExecutorServiceImpl( const String8& name, int numThreads );
 
   void shutdown() override;
   sp<Future> execute( const sp<Runnable>& task ) override;
@@ -67,8 +74,9 @@ public:
   String8 mName;
   Mutex mMutex;
   Condition mCondition;
+  ExecutorState mState;
   Vector<sp<WorkTask>> mQueue;
-  sp<WorkerThread> mThread;
+  Vector<sp<WorkerThread>> mThreads;
 
 };
 
@@ -78,11 +86,11 @@ public:
 
   ExecutorServiceImpl& mExeService;
   sp<Runnable> mRunnable;
-  State mState;
+  TaskState mState;
   int64_t mExecuteTime;
 
   WorkTask( ExecutorServiceImpl& exeService, const sp<Runnable>& runnable )
-    : mExeService( exeService ), mRunnable( runnable ), mState( State::Queued )
+    : mExeService( exeService ), mRunnable( runnable ), mState( TaskState::Queued )
   {}
 
   ~WorkTask() {}
@@ -91,15 +99,15 @@ public:
 
   void wait() {
     Mutex::Autolock l( mExeService.mMutex );
-    while( mState == State::Queued || mState == State::Running ) {
+    while( mState == TaskState::Queued || mState == TaskState::Running ) {
       mExeService.mCondition.wait( mExeService.mMutex );
     }
   }
 
   void cancel() {
     Mutex::Autolock l( mExeService.mMutex );
-    if( mState == State::Queued || mState == State::Running ) {
-      mState = State::Canceled;
+    if( mState == TaskState::Queued || mState == TaskState::Running ) {
+      mState = TaskState::Canceled;
       mExeService.mCondition.signalAll();
     }
   }
@@ -120,12 +128,12 @@ public:
   {}
 
   void run() {
-    if( mState == State::Queued ) {
-      mState = State::Running;
+    if( mState == TaskState::Queued ) {
+      mState = TaskState::Running;
       mExeService.mMutex.unlock();
       mRunnable->run();
       mExeService.mMutex.lock();
-      mState = State::Finished;
+      mState = TaskState::Finished;
     }
   }
 };
@@ -140,21 +148,21 @@ public:
 
   void run() {
 
-    if( mState == State::Canceled ) {
-      mState = State::Finished;
+    if( mState == TaskState::Canceled ) {
+      mState = TaskState::Finished;
       return;
     }
 
-    if( mState == State::Queued ) {
-      mState = State::Running;
+    if( mState == TaskState::Queued ) {
+      mState = TaskState::Running;
       mExeService.mMutex.unlock();
       mRunnable->run();
       mExeService.mMutex.lock();
-      if( mState == State::Running || mState == State::Queued ) {
+      if( mState == TaskState::Running || mState == TaskState::Queued ) {
         mExecuteTime = getTime() + mDelayMS;
         mExeService.mQueue.push_back( this );
         mExeService.mQueue.sort( taskComparator );
-        mState = State::Queued;
+        mState = TaskState::Queued;
       }
     }
 
@@ -172,7 +180,7 @@ void WorkerThread::run()
 
   while( mRunning ) {
     if( mExeService.mQueue.isEmpty() ) {
-      mExeService.mCondition.wait( mExeService.mMutex );
+      mExeService.mCondition.waitTimeout( mExeService.mMutex, 500 );
     } else {
       sp<WorkTask> r = mExeService.mQueue[0];
 
@@ -192,23 +200,40 @@ void WorkerThread::run()
 }
 
 
-ExecutorServiceImpl::ExecutorServiceImpl( const String8& name )
-  : mName( name ), mThread( new WorkerThread( *this ) )
+ExecutorServiceImpl::ExecutorServiceImpl( const String8& name, int numThreads )
+  : mName( name ), mState(ExecutorState::Ready)
 {
   mQueue.setCapacity( 10 );
+  mThreads.setCapacity(numThreads);
+  for (int i = 0; i < numThreads; i++) {
+	  mThreads.add(new WorkerThread(*this));
+  }
 }
 
 void ExecutorServiceImpl::start()
 {
   Mutex::Autolock l( mMutex );
-  mThread->mRunning = true;
-  mThread->start();
+  if (mState != ExecutorState::Ready) {
+	  LOG_ERROR("ExecutorService", "not in Ready state");
+	  return;
+  }
+  for (int i = 0; i < mThreads.size(); i++) {
+	  mThreads[i]->mRunning = true;
+	  mThreads[i]->start();
+  }
+  mState = ExecutorState::Running;
 }
 
 void ExecutorServiceImpl::shutdown()
 {
   {
     Mutex::Autolock l( mMutex );
+	if (mState != ExecutorState::Running) {
+		LOG_ERROR("ExecutorService", "not in running state");
+		return;
+	}
+
+	mState = ExecutorState::ShuttingDown;
 
     while(!mQueue.isEmpty()) {
       sp<WorkTask> task = mQueue[0];
@@ -217,14 +242,16 @@ void ExecutorServiceImpl::shutdown()
       task->wait();
     }
 
-    if( mThread->mRunning ) {
-      mThread->mRunning = false;
-      mCondition.signalAll();
-
-    }
+	for (int i = 0; i < mThreads.size(); i++) {
+		if (mThreads[i]->mRunning) {
+			mThreads[i]->mRunning = false;
+			mCondition.signalAll();
+			mThreads[i]->join();
+		}
+	}
   }
 
-  mThread->join();
+  mState = ExecutorState::Stopped;
 }
 
 sp<Future> ExecutorServiceImpl::execute( const sp<Runnable>& runnable )
@@ -234,6 +261,10 @@ sp<Future> ExecutorServiceImpl::execute( const sp<Runnable>& runnable )
 
 sp<Future> ExecutorServiceImpl::schedule( const sp<Runnable>& runnable, uint32_t delayMS )
 {
+	if (mState != ExecutorState::Running) {
+		LOG_ERROR("ExecutorService", "not in running state");
+		return nullptr;
+	}
   sp<WorkTask> task( new OneTimeTask( *this, runnable ) );
   task->mExecuteTime = getTime();
   task->mExecuteTime += delayMS;
@@ -247,6 +278,10 @@ sp<Future> ExecutorServiceImpl::schedule( const sp<Runnable>& runnable, uint32_t
 
 sp<Future> ExecutorServiceImpl::scheduleWithFixedDelay( const sp<Runnable>& runnable, uint32_t delayMS )
 {
+	if (mState != ExecutorState::Running) {
+		LOG_ERROR("ExecutorService", "not in running state");
+		return nullptr;
+	}
   sp<WorkTask> task( new RepeatTask( *this, runnable, delayMS ) );
   task->mExecuteTime = getTime();
   task->mExecuteTime += delayMS;
@@ -259,9 +294,9 @@ sp<Future> ExecutorServiceImpl::scheduleWithFixedDelay( const sp<Runnable>& runn
 }
 
 
-sp<ExecutorService> ExecutorService::createSingleThread( const String8& name )
+sp<ExecutorService> ExecutorService::createExecutorService( const String8& name, int numThreads )
 {
-  sp<ExecutorServiceImpl> retval( new ExecutorServiceImpl( name ) );
+  sp<ExecutorServiceImpl> retval( new ExecutorServiceImpl( name, numThreads ) );
   retval->start();
 
   return retval;
