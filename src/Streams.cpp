@@ -112,6 +112,28 @@ int ByteArrayInputStream::read( uint8_t* buf, size_t off, size_t len )
   }
 }
 
+#define BUF_SIZE 1024
 
+void pump( InputStream& in, OutputStream& out, IOProgress* callback, bool closeOutput, bool closeInput )
+{
+  uint8_t buf[BUF_SIZE];
+  int bytesRead;
+
+  while( ( bytesRead = in.read( buf, 0, BUF_SIZE ) ) > 0 ) {
+    out.write( buf, 0, bytesRead );
+    if( callback != nullptr ) {
+      callback->onProgress( bytesRead );
+    }
+  }
+
+  if( closeInput ) {
+    in.close();
+  }
+
+  if( closeOutput ) {
+    out.close();
+  }
+
+}
 
 } // namespace

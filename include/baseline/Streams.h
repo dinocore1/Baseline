@@ -116,6 +116,14 @@ private:
 
 };
 
+class IOProgress
+{
+public:
+  virtual void onProgress( size_t bytesWritten ) = 0;
+};
+
+void pump( InputStream& in, OutputStream& out, IOProgress* callback = nullptr, bool closeOutput = true, bool closeInput = true );
+
 
 } // namespace baseline
 
