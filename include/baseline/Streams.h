@@ -21,6 +21,8 @@
 
 namespace baseline {
 
+class SharedBuffer;
+
 class InputStream
 {
 public:
@@ -62,7 +64,14 @@ public:
   virtual int write( uint8_t* buf, size_t off, size_t len ) = 0;
 };
 
-class SharedBuffer;
+class NullOutputStream : public OutputStream
+{
+public:
+
+  void close();
+  int write( uint8_t* buf, size_t off, size_t len );
+
+};
 
 class ByteArrayOutputStream : public OutputStream
 {
@@ -89,6 +98,22 @@ public:
 private:
   size_t mSize;
   SharedBuffer* mBuffer;
+};
+
+class ByteArrayInputStream : public InputStream
+{
+public:
+  ByteArrayInputStream( SharedBuffer* buf, size_t offset, size_t len );
+  ~ByteArrayInputStream();
+
+  void close();
+  int read( uint8_t* buf, size_t off, size_t len );
+
+private:
+  SharedBuffer* mBuffer;
+  size_t mOffset;
+  size_t mLen;
+
 };
 
 

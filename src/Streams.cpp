@@ -21,6 +21,16 @@
 
 namespace baseline {
 
+void NullOutputStream::close()
+{
+}
+
+int NullOutputStream::write( uint8_t*, size_t, size_t len )
+{
+  return len;
+}
+
+/////////////// ByteArrayOutputStream //////////////////////
 
 ByteArrayOutputStream::ByteArrayOutputStream( size_t size )
 {
@@ -60,9 +70,48 @@ int ByteArrayOutputStream::write( uint8_t* buf, size_t off, size_t len )
     mBuffer = mBuffer->editResize( mSize + len );
   }
 
-  memcpy( &( ( uint8_t* )mBuffer->data() )[mSize], &buf[off], len );
+  uint8_t* dest = reinterpret_cast<uint8_t*>( mBuffer->data() );
+  memcpy( &dest[mSize], &buf[off], len );
   mSize += len;
   return len;
 }
+
+/////////////// ByteArrayInputStream //////////////////////
+
+ByteArrayInputStream::ByteArrayInputStream( SharedBuffer* buf, size_t offset, size_t len )
+  : mBuffer( buf ), mOffset( 0 ), mLen( len )
+{
+  mBuffer->acquire();
+}
+
+ByteArrayInputStream::~ByteArrayInputStream()
+{
+  if( mBuffer != nullptr ) {
+    LOG_WARN( "ByteArrayInputStream", "destory without calling close first" );
+    close();
+  }
+}
+
+void ByteArrayInputStream::close()
+{
+  mBuffer->release();
+  mBuffer = nullptr;
+}
+
+int ByteArrayInputStream::read( uint8_t* buf, size_t off, size_t len )
+{
+
+  if( mOffset < mLen ) {
+    uint8_t* src = reinterpret_cast<uint8_t*>( mBuffer->data() );
+    len = MIN( len, mLen - mOffset );
+    memcpy( &buf[off], &src[mOffset], len );
+    mOffset += len;
+    return len;
+  } else {
+    return -1;
+  }
+}
+
+
 
 } // namespace

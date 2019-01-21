@@ -99,3 +99,24 @@ TEST_CASE( "ByteArrayOutputStream has correct data", "[ByteArrayOutputStream]" )
   out.close();
 
 }
+
+TEST_CASE( "ByteArrayInputStream outputs correct data", "[ByteArrayInputStream]" )
+{
+  SharedBuffer* buf = SharedBuffer::alloc( 10 );
+  uint8_t* d = ( uint8_t* ) buf->data();
+  d[0] = 'x';
+  d[1] = 'y';
+  d[2] = 'z';
+
+  uint8_t b2[32];
+
+  ByteArrayInputStream bin( buf, 0, 3 );
+
+  REQUIRE( bin.read( b2, 0, 2 ) == 2 );
+  REQUIRE( b2[0] == 'x' );
+  REQUIRE( b2[1] == 'y' );
+
+
+  bin.close();
+  buf->release();
+}
