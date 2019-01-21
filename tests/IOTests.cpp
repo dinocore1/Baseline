@@ -23,6 +23,7 @@
 #include <baseline/CircleBuffer.h>
 #include <baseline/Streams.h>
 #include <baseline/SharedBuffer.h>
+#include <baseline/Hash.h>
 
 using namespace baseline;
 
@@ -119,4 +120,14 @@ TEST_CASE( "ByteArrayInputStream outputs correct data", "[ByteArrayInputStream]"
 
   bin.close();
   buf->release();
+}
+
+TEST_CASE("crc32 works", "[CRC32]")
+{
+  uint8_t buf[] = {
+    'a', 'b', 'c'
+  };
+
+  HashFunction* hash = crc32();
+  hash->update(buf, 3);
 }
