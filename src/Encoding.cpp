@@ -21,35 +21,36 @@
 
 namespace baseline {
 
-String8 BaseEncoding::encode(SharedBuffer* buf) const
+String8 BaseEncoding::encode( SharedBuffer* buf ) const
 {
-    return encode(buf->data(), buf->size());
+  return encode( buf->data(), buf->size() );
 }
 
-class HexBaseEncoding : public BaseEncoding {
+class HexBaseEncoding : public BaseEncoding
+{
 public:
 
-    String8 encode(void* buf, size_t len) const override;
-    SharedBuffer* decode(const String8&) const override;
+  String8 encode( void* buf, size_t len ) const override;
+  SharedBuffer* decode( const String8& ) const override;
 
 };
 
-String8 HexBaseEncoding::encode(void* buf, size_t len) const
+String8 HexBaseEncoding::encode( void* buf, size_t len ) const
 {
-    static const char dec2hex[16+1] = "0123456789abcdef";
-    String8 string;
+  static const char dec2hex[16 + 1] = "0123456789abcdef";
+  String8 string;
 
-    for(size_t i=0;i<len;i++) {
-        uint8_t value = reinterpret_cast<uint8_t*>(buf)[i];
+  for( size_t i = 0; i < len; i++ ) {
+    uint8_t value = reinterpret_cast<uint8_t*>( buf )[i];
 
-        string.append(dec2hex[(value >> 4) & 15]);
-        string.append(dec2hex[value        & 15]);
-    }
+    string.append( dec2hex[( value >> 4 ) & 15] );
+    string.append( dec2hex[value        & 15] );
+  }
 
-    return string;
+  return string;
 }
 
-SharedBuffer* HexBaseEncoding::decode(const String8& str) const
+SharedBuffer* HexBaseEncoding::decode( const String8& str ) const
 {
 
 }
@@ -58,7 +59,7 @@ HexBaseEncoding gHexEncoding;
 
 BaseEncoding& hexEncoding()
 {
-    return gHexEncoding;
+  return gHexEncoding;
 }
 
 }

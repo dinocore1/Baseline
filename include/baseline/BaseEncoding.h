@@ -24,11 +24,12 @@ namespace baseline {
 
 class SharedBuffer;
 
-class BaseEncoding {
+class BaseEncoding
+{
 public:
-    String8 encode(SharedBuffer*) const;
-    virtual String8 encode(void* buf, size_t len) const = 0;
-    virtual SharedBuffer* decode(const String8&) const = 0;
+  String8 encode( SharedBuffer* ) const;
+  virtual String8 encode( void* buf, size_t len ) const = 0;
+  virtual SharedBuffer* decode( const String8& ) const = 0;
 
 };
 
