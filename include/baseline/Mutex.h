@@ -25,6 +25,7 @@ class Mutex
 {
 public:
   Mutex();
+  Mutex( int value );
   ~Mutex();
   status_t lock();
   void unlock();

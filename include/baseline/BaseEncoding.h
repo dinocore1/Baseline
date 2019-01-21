@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef BASELINE_HASH_H_
-#define BASELINE_HASH_H_
+#ifndef BASELINE_BASEENCODING_H_
+#define BASELINE_BASEENCODING_H_
 
 #include <baseline/String8.h>
 
@@ -24,32 +24,16 @@ namespace baseline {
 
 class SharedBuffer;
 
-class HashCode
-{
+class BaseEncoding {
 public:
-  HashCode( void* buf, size_t len );
-  HashCode( const HashCode& );
-  ~HashCode();
-
-  String8 toHexString() const;
-  bool operator < ( const HashCode& ) const;
-  bool operator == ( const HashCode& ) const;
-
-private:
-  SharedBuffer* mBuffer;
-};
-
-class HashFunction
-{
-public:
-  virtual ~HashFunction();
-  virtual void update( void* buf, size_t len ) = 0;
-  virtual HashCode finalize() = 0;
+    String8 encode(SharedBuffer*) const;
+    virtual String8 encode(void* buf, size_t len) const = 0;
+    virtual SharedBuffer* decode(const String8&) const = 0;
 
 };
 
-HashFunction* crc32();
+BaseEncoding& hexEncoding();
 
 } // namespace
 
-#endif // BASELINE_HASH_H_
+#endif // BASELINE_BASEENCODING_H_

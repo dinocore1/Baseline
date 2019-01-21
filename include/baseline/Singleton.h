@@ -27,30 +27,30 @@ template <typename TYPE>
 class Singleton
 {
 public:
-    static TYPE& getInstance() {
-        Mutex::Autolock _l(sLock);
-        TYPE* instance = sInstance;
-        if (instance == 0) {
-            instance = new TYPE();
-            sInstance = instance;
-        }
-        return *instance;
+  static TYPE& getInstance() {
+    Mutex::Autolock _l( sLock );
+    TYPE* instance = sInstance;
+    if( instance == 0 ) {
+      instance = new TYPE();
+      sInstance = instance;
     }
+    return *instance;
+  }
 
-    static bool hasInstance() {
-        Mutex::Autolock _l(sLock);
-        return sInstance != 0;
-    }
-    
+  static bool hasInstance() {
+    Mutex::Autolock _l( sLock );
+    return sInstance != 0;
+  }
+
 protected:
-    ~Singleton() { }
-    Singleton() { }
+  ~Singleton() { }
+  Singleton() { }
 
 private:
-    Singleton(const Singleton&);
-    Singleton& operator = (const Singleton&);
-    static Mutex sLock;
-    static TYPE* sInstance;
+  Singleton( const Singleton& );
+  Singleton& operator = ( const Singleton& );
+  static Mutex sLock;
+  static TYPE* sInstance;
 };
 
 /*
@@ -63,10 +63,10 @@ private:
  */
 
 #define BASELINE_SINGLETON_STATIC_INSTANCE(TYPE)                 \
-    template<> ::baseline::Mutex  \
-        (::baseline::Singleton< TYPE >::sLock);  \
-    template<> TYPE* ::baseline::Singleton< TYPE >::sInstance(0);  \
-    template class ::baseline::Singleton< TYPE >;
+  template<> ::baseline::Mutex  \
+  (::baseline::Singleton< TYPE >::sLock)(2);  \
+  template<> TYPE* ::baseline::Singleton< TYPE >::sInstance(0);  \
+  template class ::baseline::Singleton< TYPE >;
 
 } // namespace
 

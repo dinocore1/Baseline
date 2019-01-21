@@ -73,6 +73,7 @@ public:
   status_t            setTo( const char32_t* other,
                              size_t length );
 
+  status_t            append( const char);
   status_t            append( const String8& other );
   status_t            append( const char* other );
   status_t            append( const char* other, size_t numChars );

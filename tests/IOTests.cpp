@@ -24,6 +24,7 @@
 #include <baseline/Streams.h>
 #include <baseline/SharedBuffer.h>
 #include <baseline/Hash.h>
+#include <baseline/BaseEncoding.h>
 
 using namespace baseline;
 
@@ -122,12 +123,35 @@ TEST_CASE( "ByteArrayInputStream outputs correct data", "[ByteArrayInputStream]"
   buf->release();
 }
 
-TEST_CASE("crc32 works", "[CRC32]")
+TEST_CASE( "hex encoding works", "[HexEncoding]")
+{
+  uint8_t data[] {
+    0xEB, 0x8E, 0xBA, 0x67
+  };
+
+  BaseEncoding& hex = hexEncoding();
+  String8 str = hex.encode(data, 4);
+  str.toUpper();
+  String8 expected("EB8EBA67");
+
+  REQUIRE(str == expected);
+
+}
+
+TEST_CASE( "crc32 works", "[CRC32]" )
 {
   uint8_t buf[] = {
-    'a', 'b', 'c'
+    'x', 'y', 'z'
   };
 
   HashFunction* hash = crc32();
-  hash->update(buf, 3);
+  hash->update( buf, 3 );
+  HashCode value = hash->finalize();
+  String8 str = value.toHexString();
+  str.toUpper();
+
+  REQUIRE( str == String8("EB8EBA67") );
+
+
+  delete hash;
 }

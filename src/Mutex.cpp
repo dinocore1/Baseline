@@ -33,6 +33,11 @@ Mutex::Mutex()
 #endif
 }
 
+Mutex::Mutex( int var )
+{
+
+}
+
 Mutex::~Mutex()
 {
 #if defined(CMAKE_USE_PTHREADS_INIT)

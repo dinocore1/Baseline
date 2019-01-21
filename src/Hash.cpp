@@ -19,25 +19,37 @@
 #include <baseline/Hash.h>
 #include <baseline/SharedBuffer.h>
 #include <baseline/Singleton.h>
+#include <baseline/BaseEncoding.h>
 
 namespace baseline {
 
-HashCode::HashCode(void* buf, size_t len)
+HashCode::HashCode( void* buf, size_t len )
 {
-    mBuffer = SharedBuffer::alloc(len);
-    memcpy(mBuffer->data(), buf, len);
+  mBuffer = SharedBuffer::alloc( len );
+  memcpy( mBuffer->data(), buf, len );
 }
 
-HashCode::HashCode(const HashCode& c)
- : mBuffer(c.mBuffer)
+HashCode::HashCode( const HashCode& c )
+  : mBuffer( c.mBuffer )
 {
-    mBuffer->acquire();
+  mBuffer->acquire();
 }
 
 HashCode::~HashCode()
 {
-    mBuffer->release();
-    mBuffer = nullptr;
+  mBuffer->release();
+  mBuffer = nullptr;
+}
+
+String8 HashCode::toHexString() const
+{
+    return hexEncoding().encode(mBuffer);
+}
+
+bool HashCode::operator== ( const HashCode& c ) const
+{
+  bool retval = mBuffer->size() == c.mBuffer->size() &&
+                memcmp( mBuffer->data(), c.mBuffer->data(), mBuffer->size() ) == 0;
 }
 
 HashFunction::~HashFunction()
@@ -45,74 +57,74 @@ HashFunction::~HashFunction()
 
 ////////////////// Crc32 //////////////////
 
-struct Crc32Table : public Singleton<Crc32Table>
-{
-    Crc32Table();
-    uint32_t gCrc32Table[256];
+struct Crc32Table : public Singleton<Crc32Table> {
+  Crc32Table();
+  uint32_t gCrc32Table[256];
 };
 
-BASELINE_SINGLETON_STATIC_INSTANCE(Crc32Table);
+BASELINE_SINGLETON_STATIC_INSTANCE( Crc32Table );
 
 Crc32Table::Crc32Table()
 {
-    uint32_t POLYNOMIAL = 0xEDB88320;
-    uint32_t remainder;
-    uint8_t b = 0;
-    do {
-        // Start with the data byte
-        remainder = b;
-        for (uint32_t bit = 8; bit > 0; --bit) {
-            if (remainder & 1)
-                remainder = (remainder >> 1) ^ POLYNOMIAL;
-            else
-                remainder = (remainder >> 1);
-        }
-        gCrc32Table[(size_t)b] = remainder;
-    } while(0 != ++b);
+  uint32_t POLYNOMIAL = 0x04C11DB7;
+  uint32_t remainder;
+  uint8_t b = 0;
+  do {
+    // Start with the data byte
+    remainder = b;
+    for( uint32_t bit = 8; bit > 0; --bit ) {
+      if( remainder & 1 ) {
+        remainder = ( remainder >> 1 ) ^ POLYNOMIAL;
+      } else {
+        remainder = ( remainder >> 1 );
+      }
+    }
+    gCrc32Table[( size_t )b] = remainder;
+  } while( 0 != ++b );
 }
 
 
 
-class Crc32 : public HashFunction{
+class Crc32 : public HashFunction
+{
 public:
-    Crc32();
+  Crc32();
 
-    void update(void* buf, size_t len) override;
-    HashCode finalize() override;
+  void update( void* buf, size_t len ) override;
+  HashCode finalize() override;
 
-    uint32_t mHash;
+  uint32_t mHash;
 
-    
+
 
 };
 
 Crc32::Crc32()
- : mHash(0xFFFFFFFF)
+  : mHash( 0xFFFFFFFF )
 {
 }
 
-void Crc32::update(void* buf, size_t len)
+void Crc32::update( void* buf, size_t len )
 {
-    uint32_t* crc32Table = Crc32Table::getInstance().gCrc32Table;
+  uint32_t* crc32Table = Crc32Table::getInstance().gCrc32Table;
 
-    uint8_t* data = (uint8_t*) buf;
-    while (len--) {
-        mHash = (mHash >> 8) ^ crc32Table[(mHash & 0xFF) ^ *data++];
-    }
+  uint8_t* data = ( uint8_t* ) buf;
+  while( len-- ) {
+    mHash = ( mHash >> 8 ) ^ crc32Table[( mHash & 0xFF ) ^ *data++];
+  }
 }
 
 HashCode Crc32::finalize()
 {
-    mHash = ~mHash;
-    return HashCode(&mHash, 4);
+  mHash = ~mHash;
+  return HashCode( &mHash, 4 );
 }
 
 
 
 HashFunction* crc32()
 {
-
-    return new Crc32();
+  return new Crc32();
 }
 
 
