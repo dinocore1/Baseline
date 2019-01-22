@@ -39,12 +39,15 @@ String8 HexBaseEncoding::encode( void* buf, size_t len ) const
 {
   static const char dec2hex[16 + 1] = "0123456789abcdef";
   String8 string;
+  char strbuf[2];
 
   for( size_t i = 0; i < len; i++ ) {
     uint8_t value = reinterpret_cast<uint8_t*>( buf )[i];
 
-    string.append( dec2hex[( value >> 4 ) & 15] );
-    string.append( dec2hex[value        & 15] );
+    strbuf[0] = dec2hex[( value >> 4 ) & 15];
+    strbuf[1] = dec2hex[value        & 15];
+
+    string.append( strbuf, 2 );
   }
 
   return string;

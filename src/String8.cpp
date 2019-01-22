@@ -273,11 +273,6 @@ status_t String8::setTo( const char32_t* other, size_t len )
   return NO_MEMORY;
 }
 
-status_t String8::append( const char c )
-{
-  append( &c, 1 );
-}
-
 status_t String8::append( const String8& other )
 {
   const size_t otherLen = other.bytes();
