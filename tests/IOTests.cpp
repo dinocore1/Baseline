@@ -179,6 +179,17 @@ TEST_CASE( "string compare works", "[String8]" )
 
 }
 
+TEST_CASE( "HashCode compare works", "[HashCode]") {
+  uint8_t buf[] = {
+    0x3a, 0xa8
+  };
+
+  HashCode a(buf, 2);
+  
+  REQUIRE(a == HashCode(buf, 2));
+  REQUIRE(a != HashCode(buf, 1));
+}
+
 TEST_CASE( "crc32 works", "[CRC32]" )
 {
   uint8_t buf[] = {
