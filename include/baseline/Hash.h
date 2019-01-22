@@ -54,6 +54,8 @@ public:
  */
 up<HashFunction> createCRC32();
 
+up<HashFunction> createSHA1();
+
 } // namespace
 
 #endif // BASELINE_HASH_H_

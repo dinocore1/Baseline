@@ -210,3 +210,17 @@ TEST_CASE( "crc32 works", "[CRC32]" )
 
 }
 
+TEST_CASE( "SHA1 works", "[SHA1]") {
+  uint8_t buf[] = {
+    'x', 'y', 'z'
+  };
+
+  up<HashFunction> hash = createSHA1();
+  hash->update( buf, 3 );
+  HashCode value = hash->finalize();
+  String8 str = value.toHexString();
+  str.toLower();
+
+  REQUIRE( str == String8( "66b27417d37e024c46526c2f6d358a754fc552f3" ) );
+}
+
