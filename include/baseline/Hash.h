@@ -46,6 +46,7 @@ public:
   virtual ~HashFunction();
   virtual void update( void* buf, size_t len ) = 0;
   virtual HashCode finalize() = 0;
+  virtual void reset() = 0;
 
 };
 

@@ -154,14 +154,20 @@ public:
 
   void update( void* buf, size_t len ) override;
   HashCode finalize() override;
+  void reset() override;
 
   uint32_t mHash;
 
 };
 
 Crc32::Crc32()
-  : mHash( 0xFFFFFFFF )
 {
+  reset();
+}
+
+void Crc32::reset()
+{
+  mHash = 0xFFFFFFFF;
 }
 
 void Crc32::update( void* buf, size_t len )
@@ -211,6 +217,7 @@ public:
 
   void update( void* buf, size_t len ) override;
   HashCode finalize() override;
+  void reset() override;
 
 protected:
   void addByteDontCountBits( uint8_t );
@@ -225,7 +232,11 @@ protected:
 
 SHA1::SHA1()
 {
-  /* SHA1 initialization constants */
+  reset();
+}
+
+void SHA1::reset()
+{
   mDigest[0] = 0x67452301;
   mDigest[1] = 0xefcdab89;
   mDigest[2] = 0x98badcfe;
