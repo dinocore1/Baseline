@@ -33,12 +33,12 @@ void uint32_to_buf(uint8_t* buf, uint32_t value)
 }
 
 static
-void buf_to_uint32(uint32_t& value, uint8_t* buf)
+void buf_to_uint32(uint32_t* value, uint8_t* buf)
 {
-    value = buf[0] << 24 |
-            buf[1] << 16 |
-            buf[2] << 8  |
-            buf[4] << 0;
+    *value = ((uint32_t)buf[0] << 24) |
+             ((uint32_t)buf[1] << 16) |
+             ((uint32_t)buf[2] <<  8) |
+             ((uint32_t)buf[3] <<  0);
 }
 
 HashCode::HashCode( void* buf, size_t len )
@@ -301,7 +301,7 @@ void SHA1::processBlock()
  
     uint32_t block[16];
     for(int i=0;i<16;i++){
-        buf_to_uint32(block[i], &mBlock[i*4]);
+        buf_to_uint32(&block[i], &mBlock[i*4]);
     }
  
     /* 4 rounds of 20 operations each. Loop unrolled. */
