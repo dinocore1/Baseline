@@ -165,9 +165,9 @@ HashCode Crc32::finalize()
 
 
 
-HashFunction* crc32()
+up<HashFunction> createCRC32()
 {
-  return new Crc32();
+  return up<HashFunction>( new Crc32() );
 }
 
 

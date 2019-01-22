@@ -19,6 +19,7 @@
 #define BASELINE_HASH_H_
 
 #include <baseline/String8.h>
+#include <baseline/UniquePointer.h>
 
 namespace baseline {
 
@@ -48,7 +49,10 @@ public:
 
 };
 
-HashFunction* crc32();
+/**
+ * Create a new HashFunction that computes CRC32.
+ */
+up<HashFunction> createCRC32();
 
 } // namespace
 

@@ -56,6 +56,8 @@ public:
   explicit UniquePtr( T* ptr = NULL ) : mPtr( ptr ) {
   }
 
+  UniquePtr( UniquePtr&& src ) : mPtr( src.mPtr ) {}
+
   ~UniquePtr() {
     reset();
   }
