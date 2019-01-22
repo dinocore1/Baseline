@@ -24,12 +24,21 @@
 namespace baseline {
 
 static
-void storeBigEndianUint32(uint8_t* buf, uint32_t value)
+void uint32_to_buf(uint8_t* buf, uint32_t value)
 {
     buf[0] = ( value >> 24 ) & 0xFF;
     buf[1] = ( value >> 16 ) & 0xFF;
     buf[2] = ( value >>  8 ) & 0xFF;
     buf[3] = ( value >>  0 ) & 0xFF;
+}
+
+static
+void buf_to_uint32(uint32_t& value, uint8_t* buf)
+{
+    value = buf[0] << 24 |
+            buf[1] << 16 |
+            buf[2] << 8  |
+            buf[4] << 0;
 }
 
 HashCode::HashCode( void* buf, size_t len )
@@ -168,7 +177,7 @@ HashCode Crc32::finalize()
 {
   mHash = mHash ^ 0xFFFFFFFF;
   uint8_t values[4];
-  storeBigEndianUint32(values, mHash);
+  uint32_to_buf(values, mHash);
   return HashCode( values, 4 );
 }
 
@@ -184,10 +193,10 @@ up<HashFunction> createCRC32()
 
 /* Help macros */
 #define SHA1_ROL(value, bits) (((value) << (bits)) | (((value) & 0xffffffff) >> (32 - (bits))))
-#define SHA1_BLK(i) (mBlock[i&15] = SHA1_ROL(mBlock[(i+13)&15] ^ mBlock[(i+8)&15] ^ mBlock[(i+2)&15] ^ mBlock[i&15],1))
+#define SHA1_BLK(i) (block[i&15] = SHA1_ROL(block[(i+13)&15] ^ block[(i+8)&15] ^ block[(i+2)&15] ^ block[i&15],1))
  
 /* (R0+R1), R2, R3, R4 are the different operations used in SHA1 */
-#define SHA1_R0(v,w,x,y,z,i) z += ((w&(x^y))^y)     + mBlock[i]    + 0x5a827999 + SHA1_ROL(v,5); w=SHA1_ROL(w,30);
+#define SHA1_R0(v,w,x,y,z,i) z += ((w&(x^y))^y)     + block[i]    + 0x5a827999 + SHA1_ROL(v,5); w=SHA1_ROL(w,30);
 #define SHA1_R1(v,w,x,y,z,i) z += ((w&(x^y))^y)     + SHA1_BLK(i) + 0x5a827999 + SHA1_ROL(v,5); w=SHA1_ROL(w,30);
 #define SHA1_R2(v,w,x,y,z,i) z += (w^x^y)           + SHA1_BLK(i) + 0x6ed9eba1 + SHA1_ROL(v,5); w=SHA1_ROL(w,30);
 #define SHA1_R3(v,w,x,y,z,i) z += (((w|x)&y)|(w&x)) + SHA1_BLK(i) + 0x8f1bbcdc + SHA1_ROL(v,5); w=SHA1_ROL(w,30);
@@ -271,11 +280,11 @@ HashCode SHA1::finalize()
   }
 
   uint8_t values[20];
-  storeBigEndianUint32(&values[0 * 4], mDigest[0]);
-  storeBigEndianUint32(&values[1 * 4], mDigest[1]);
-  storeBigEndianUint32(&values[2 * 4], mDigest[2]);
-  storeBigEndianUint32(&values[3 * 4], mDigest[3]);
-  storeBigEndianUint32(&values[4 * 4], mDigest[4]);
+  uint32_to_buf(&values[0 * 4], mDigest[0]);
+  uint32_to_buf(&values[1 * 4], mDigest[1]);
+  uint32_to_buf(&values[2 * 4], mDigest[2]);
+  uint32_to_buf(&values[3 * 4], mDigest[3]);
+  uint32_to_buf(&values[4 * 4], mDigest[4]);
 
   return HashCode( values, 20 );
 
@@ -290,6 +299,10 @@ void SHA1::processBlock()
     uint32_t d = mDigest[3];
     uint32_t e = mDigest[4];
  
+    uint32_t block[16];
+    for(int i=0;i<16;i++){
+        buf_to_uint32(block[i], &mBlock[i*4]);
+    }
  
     /* 4 rounds of 20 operations each. Loop unrolled. */
     SHA1_R0(a,b,c,d,e, 0);
