@@ -46,10 +46,13 @@ String8 HashCode::toHexString() const
   return hexEncoding().encode( mBuffer );
 }
 
-bool HashCode::operator== ( const HashCode& c ) const
+int HashCode::compare( const HashCode& rhs ) const
 {
-  bool retval = mBuffer->size() == c.mBuffer->size() &&
-                memcmp( mBuffer->data(), c.mBuffer->data(), mBuffer->size() ) == 0;
+  int retval = mBuffer->size() - rhs.mBuffer->size();
+  if( retval == 0 ) {
+    retval = memcmp( mBuffer->data(), rhs.mBuffer->data(), mBuffer->size() );
+  }
+  return retval;
 }
 
 HashFunction::~HashFunction()

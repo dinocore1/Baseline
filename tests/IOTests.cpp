@@ -138,6 +138,31 @@ TEST_CASE( "hex encoding works", "[HexEncoding]" )
 
 }
 
+TEST_CASE( "trivial compare works", "[Comparable]") {
+    struct Int : public Comparable<Int> {
+      int compare(const Int& rhs) const {
+        return mValue - rhs.mValue;
+      }
+
+      Int(int v) : mValue(v) {}
+      int mValue;
+    };
+
+    Int a(5);
+    Int b(5);
+    Int c(8);
+
+    REQUIRE( a == b );
+    REQUIRE( a <= b );
+    REQUIRE( a >= b );
+    REQUIRE( !(a != b) );
+    REQUIRE( a < c);
+    REQUIRE( a <= c);
+    REQUIRE( c > a);
+    REQUIRE( c >= a);
+
+}
+
 TEST_CASE( "crc32 works", "[CRC32]" )
 {
   uint8_t buf[] = {

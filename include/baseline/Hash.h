@@ -20,12 +20,13 @@
 
 #include <baseline/String8.h>
 #include <baseline/UniquePointer.h>
+#include <baseline/Comparable.h>
 
 namespace baseline {
 
 class SharedBuffer;
 
-class HashCode
+class HashCode : public Comparable<HashCode>
 {
 public:
   HashCode( void* buf, size_t len );
@@ -33,8 +34,7 @@ public:
   ~HashCode();
 
   String8 toHexString() const;
-  bool operator < ( const HashCode& ) const;
-  bool operator == ( const HashCode& ) const;
+  int compare( const HashCode& rhs ) const override;
 
 private:
   SharedBuffer* mBuffer;
