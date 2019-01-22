@@ -210,7 +210,8 @@ TEST_CASE( "crc32 works", "[CRC32]" )
 
 }
 
-TEST_CASE( "SHA1 works", "[SHA1]") {
+TEST_CASE( "SHA1 works", "[SHA1]" )
+{
   uint8_t buf[] = {
     'x', 'y', 'z'
   };

@@ -24,21 +24,21 @@
 namespace baseline {
 
 static
-void uint32_to_buf(uint8_t* buf, uint32_t value)
+void uint32_to_buf( uint8_t* buf, uint32_t value )
 {
-    buf[0] = ( value >> 24 ) & 0xFF;
-    buf[1] = ( value >> 16 ) & 0xFF;
-    buf[2] = ( value >>  8 ) & 0xFF;
-    buf[3] = ( value >>  0 ) & 0xFF;
+  buf[0] = ( value >> 24 ) & 0xFF;
+  buf[1] = ( value >> 16 ) & 0xFF;
+  buf[2] = ( value >>  8 ) & 0xFF;
+  buf[3] = ( value >>  0 ) & 0xFF;
 }
 
 static
-void buf_to_uint32(uint32_t* value, uint8_t* buf)
+void buf_to_uint32( uint32_t* value, uint8_t* buf )
 {
-    *value = ((uint32_t)buf[0] << 24) |
-             ((uint32_t)buf[1] << 16) |
-             ((uint32_t)buf[2] <<  8) |
-             ((uint32_t)buf[3] <<  0);
+  *value = ( ( uint32_t )buf[0] << 24 ) |
+           ( ( uint32_t )buf[1] << 16 ) |
+           ( ( uint32_t )buf[2] <<  8 ) |
+           ( ( uint32_t )buf[3] <<  0 );
 }
 
 HashCode::HashCode( void* buf, size_t len )
@@ -177,7 +177,7 @@ HashCode Crc32::finalize()
 {
   mHash = mHash ^ 0xFFFFFFFF;
   uint8_t values[4];
-  uint32_to_buf(values, mHash);
+  uint32_to_buf( values, mHash );
   return HashCode( values, 4 );
 }
 
@@ -194,7 +194,7 @@ up<HashFunction> createCRC32()
 /* Help macros */
 #define SHA1_ROL(value, bits) (((value) << (bits)) | (((value) & 0xffffffff) >> (32 - (bits))))
 #define SHA1_BLK(i) (block[i&15] = SHA1_ROL(block[(i+13)&15] ^ block[(i+8)&15] ^ block[(i+2)&15] ^ block[i&15],1))
- 
+
 /* (R0+R1), R2, R3, R4 are the different operations used in SHA1 */
 #define SHA1_R0(v,w,x,y,z,i) z += ((w&(x^y))^y)     + block[i]    + 0x5a827999 + SHA1_ROL(v,5); w=SHA1_ROL(w,30);
 #define SHA1_R1(v,w,x,y,z,i) z += ((w&(x^y))^y)     + SHA1_BLK(i) + 0x5a827999 + SHA1_ROL(v,5); w=SHA1_ROL(w,30);
@@ -213,7 +213,7 @@ public:
   HashCode finalize() override;
 
 protected:
-  void addByteDontCountBits(uint8_t);
+  void addByteDontCountBits( uint8_t );
   void processBlock();
 
   uint32_t mDigest[5];
@@ -225,66 +225,67 @@ protected:
 
 SHA1::SHA1()
 {
-    /* SHA1 initialization constants */
-    mDigest[0] = 0x67452301;
-    mDigest[1] = 0xefcdab89;
-    mDigest[2] = 0x98badcfe;
-    mDigest[3] = 0x10325476;
-    mDigest[4] = 0xc3d2e1f0;
- 
-    mBlockPtr = 0;
-    mNumBits = 0;
+  /* SHA1 initialization constants */
+  mDigest[0] = 0x67452301;
+  mDigest[1] = 0xefcdab89;
+  mDigest[2] = 0x98badcfe;
+  mDigest[3] = 0x10325476;
+  mDigest[4] = 0xc3d2e1f0;
+
+  mBlockPtr = 0;
+  mNumBits = 0;
 }
 
-void SHA1::update(void* buf, size_t len)
+void SHA1::update( void* buf, size_t len )
 {
-    int numBytes;
-    int i = 0;
-    uint8_t* input = reinterpret_cast<uint8_t*>(buf);
+  int numBytes;
+  int i = 0;
+  uint8_t* input = reinterpret_cast<uint8_t*>( buf );
 
-    mNumBits += len * 8;
+  mNumBits += len * 8;
 
-    while(len > 0) {
-        if(mBlockPtr < SHA1_BLOCKSIZE) {
-            numBytes = MIN(len, SHA1_BLOCKSIZE - mBlockPtr);
-            memcpy(&mBlock[mBlockPtr], &input[i], numBytes);
-            i += numBytes;
-            mBlockPtr += numBytes;
-            len -= numBytes;
-        } else {
-            processBlock();
-            mBlockPtr = 0;
-        }
+  while( len > 0 ) {
+    if( mBlockPtr < SHA1_BLOCKSIZE ) {
+      numBytes = MIN( len, SHA1_BLOCKSIZE - mBlockPtr );
+      memcpy( &mBlock[mBlockPtr], &input[i], numBytes );
+      i += numBytes;
+      mBlockPtr += numBytes;
+      len -= numBytes;
+    } else {
+      processBlock();
+      mBlockPtr = 0;
     }
+  }
 
-    
+
 }
 
-void SHA1::addByteDontCountBits(uint8_t x) {
-    mBlock[mBlockPtr++] = x;
-    if(mBlockPtr >= SHA1_BLOCKSIZE) {
-        processBlock();
-        mBlockPtr = 0;
-    }
+void SHA1::addByteDontCountBits( uint8_t x )
+{
+  mBlock[mBlockPtr++] = x;
+  if( mBlockPtr >= SHA1_BLOCKSIZE ) {
+    processBlock();
+    mBlockPtr = 0;
+  }
 }
 
 HashCode SHA1::finalize()
 {
   //hashed text ends with 0x80, some padding 0x00 and the lenth in bits
-  addByteDontCountBits(0x80);
-  while(mBlockPtr % SHA1_BLOCKSIZE != 56) {
-      addByteDontCountBits(0x00);
+  addByteDontCountBits( 0x80 );
+  while( mBlockPtr % SHA1_BLOCKSIZE != 56 ) {
+    addByteDontCountBits( 0x00 );
   }
-  for(int j=7;j>=0;j--) {
-      addByteDontCountBits(mNumBits >> j * 8);
+  for( int j = 7; j >= 0; j-- ) {
+    addByteDontCountBits( mNumBits >> j * 8 );
   }
 
   uint8_t values[20];
-  uint32_to_buf(&values[0 * 4], mDigest[0]);
-  uint32_to_buf(&values[1 * 4], mDigest[1]);
-  uint32_to_buf(&values[2 * 4], mDigest[2]);
-  uint32_to_buf(&values[3 * 4], mDigest[3]);
-  uint32_to_buf(&values[4 * 4], mDigest[4]);
+  uint32_to_buf( &values[0 * 4], mDigest[0] );
+  uint32_to_buf( &values[1 * 4], mDigest[1] );
+  uint32_to_buf( &values[2 * 4], mDigest[2] );
+  uint32_to_buf( &values[3 * 4], mDigest[3] );
+  uint32_to_buf( &values[4 * 4], mDigest[4] );
 
   return HashCode( values, 20 );
 
@@ -292,106 +293,106 @@ HashCode SHA1::finalize()
 
 void SHA1::processBlock()
 {
-    /* Copy digest[] to working vars */
-    uint32_t a = mDigest[0];
-    uint32_t b = mDigest[1];
-    uint32_t c = mDigest[2];
-    uint32_t d = mDigest[3];
-    uint32_t e = mDigest[4];
- 
-    uint32_t block[16];
-    for(int i=0;i<16;i++){
-        buf_to_uint32(&block[i], &mBlock[i*4]);
-    }
- 
-    /* 4 rounds of 20 operations each. Loop unrolled. */
-    SHA1_R0(a,b,c,d,e, 0);
-    SHA1_R0(e,a,b,c,d, 1);
-    SHA1_R0(d,e,a,b,c, 2);
-    SHA1_R0(c,d,e,a,b, 3);
-    SHA1_R0(b,c,d,e,a, 4);
-    SHA1_R0(a,b,c,d,e, 5);
-    SHA1_R0(e,a,b,c,d, 6);
-    SHA1_R0(d,e,a,b,c, 7);
-    SHA1_R0(c,d,e,a,b, 8);
-    SHA1_R0(b,c,d,e,a, 9);
-    SHA1_R0(a,b,c,d,e,10);
-    SHA1_R0(e,a,b,c,d,11);
-    SHA1_R0(d,e,a,b,c,12);
-    SHA1_R0(c,d,e,a,b,13);
-    SHA1_R0(b,c,d,e,a,14);
-    SHA1_R0(a,b,c,d,e,15);
-    SHA1_R1(e,a,b,c,d,16);
-    SHA1_R1(d,e,a,b,c,17);
-    SHA1_R1(c,d,e,a,b,18);
-    SHA1_R1(b,c,d,e,a,19);
-    SHA1_R2(a,b,c,d,e,20);
-    SHA1_R2(e,a,b,c,d,21);
-    SHA1_R2(d,e,a,b,c,22);
-    SHA1_R2(c,d,e,a,b,23);
-    SHA1_R2(b,c,d,e,a,24);
-    SHA1_R2(a,b,c,d,e,25);
-    SHA1_R2(e,a,b,c,d,26);
-    SHA1_R2(d,e,a,b,c,27);
-    SHA1_R2(c,d,e,a,b,28);
-    SHA1_R2(b,c,d,e,a,29);
-    SHA1_R2(a,b,c,d,e,30);
-    SHA1_R2(e,a,b,c,d,31);
-    SHA1_R2(d,e,a,b,c,32);
-    SHA1_R2(c,d,e,a,b,33);
-    SHA1_R2(b,c,d,e,a,34);
-    SHA1_R2(a,b,c,d,e,35);
-    SHA1_R2(e,a,b,c,d,36);
-    SHA1_R2(d,e,a,b,c,37);
-    SHA1_R2(c,d,e,a,b,38);
-    SHA1_R2(b,c,d,e,a,39);
-    SHA1_R3(a,b,c,d,e,40);
-    SHA1_R3(e,a,b,c,d,41);
-    SHA1_R3(d,e,a,b,c,42);
-    SHA1_R3(c,d,e,a,b,43);
-    SHA1_R3(b,c,d,e,a,44);
-    SHA1_R3(a,b,c,d,e,45);
-    SHA1_R3(e,a,b,c,d,46);
-    SHA1_R3(d,e,a,b,c,47);
-    SHA1_R3(c,d,e,a,b,48);
-    SHA1_R3(b,c,d,e,a,49);
-    SHA1_R3(a,b,c,d,e,50);
-    SHA1_R3(e,a,b,c,d,51);
-    SHA1_R3(d,e,a,b,c,52);
-    SHA1_R3(c,d,e,a,b,53);
-    SHA1_R3(b,c,d,e,a,54);
-    SHA1_R3(a,b,c,d,e,55);
-    SHA1_R3(e,a,b,c,d,56);
-    SHA1_R3(d,e,a,b,c,57);
-    SHA1_R3(c,d,e,a,b,58);
-    SHA1_R3(b,c,d,e,a,59);
-    SHA1_R4(a,b,c,d,e,60);
-    SHA1_R4(e,a,b,c,d,61);
-    SHA1_R4(d,e,a,b,c,62);
-    SHA1_R4(c,d,e,a,b,63);
-    SHA1_R4(b,c,d,e,a,64);
-    SHA1_R4(a,b,c,d,e,65);
-    SHA1_R4(e,a,b,c,d,66);
-    SHA1_R4(d,e,a,b,c,67);
-    SHA1_R4(c,d,e,a,b,68);
-    SHA1_R4(b,c,d,e,a,69);
-    SHA1_R4(a,b,c,d,e,70);
-    SHA1_R4(e,a,b,c,d,71);
-    SHA1_R4(d,e,a,b,c,72);
-    SHA1_R4(c,d,e,a,b,73);
-    SHA1_R4(b,c,d,e,a,74);
-    SHA1_R4(a,b,c,d,e,75);
-    SHA1_R4(e,a,b,c,d,76);
-    SHA1_R4(d,e,a,b,c,77);
-    SHA1_R4(c,d,e,a,b,78);
-    SHA1_R4(b,c,d,e,a,79);
- 
-    /* Add the working vars back into mDigest[] */
-    mDigest[0] += a;
-    mDigest[1] += b;
-    mDigest[2] += c;
-    mDigest[3] += d;
-    mDigest[4] += e;
+  /* Copy digest[] to working vars */
+  uint32_t a = mDigest[0];
+  uint32_t b = mDigest[1];
+  uint32_t c = mDigest[2];
+  uint32_t d = mDigest[3];
+  uint32_t e = mDigest[4];
+
+  uint32_t block[16];
+  for( int i = 0; i < 16; i++ ) {
+    buf_to_uint32( &block[i], &mBlock[i * 4] );
+  }
+
+  /* 4 rounds of 20 operations each. Loop unrolled. */
+  SHA1_R0( a, b, c, d, e, 0 );
+  SHA1_R0( e, a, b, c, d, 1 );
+  SHA1_R0( d, e, a, b, c, 2 );
+  SHA1_R0( c, d, e, a, b, 3 );
+  SHA1_R0( b, c, d, e, a, 4 );
+  SHA1_R0( a, b, c, d, e, 5 );
+  SHA1_R0( e, a, b, c, d, 6 );
+  SHA1_R0( d, e, a, b, c, 7 );
+  SHA1_R0( c, d, e, a, b, 8 );
+  SHA1_R0( b, c, d, e, a, 9 );
+  SHA1_R0( a, b, c, d, e, 10 );
+  SHA1_R0( e, a, b, c, d, 11 );
+  SHA1_R0( d, e, a, b, c, 12 );
+  SHA1_R0( c, d, e, a, b, 13 );
+  SHA1_R0( b, c, d, e, a, 14 );
+  SHA1_R0( a, b, c, d, e, 15 );
+  SHA1_R1( e, a, b, c, d, 16 );
+  SHA1_R1( d, e, a, b, c, 17 );
+  SHA1_R1( c, d, e, a, b, 18 );
+  SHA1_R1( b, c, d, e, a, 19 );
+  SHA1_R2( a, b, c, d, e, 20 );
+  SHA1_R2( e, a, b, c, d, 21 );
+  SHA1_R2( d, e, a, b, c, 22 );
+  SHA1_R2( c, d, e, a, b, 23 );
+  SHA1_R2( b, c, d, e, a, 24 );
+  SHA1_R2( a, b, c, d, e, 25 );
+  SHA1_R2( e, a, b, c, d, 26 );
+  SHA1_R2( d, e, a, b, c, 27 );
+  SHA1_R2( c, d, e, a, b, 28 );
+  SHA1_R2( b, c, d, e, a, 29 );
+  SHA1_R2( a, b, c, d, e, 30 );
+  SHA1_R2( e, a, b, c, d, 31 );
+  SHA1_R2( d, e, a, b, c, 32 );
+  SHA1_R2( c, d, e, a, b, 33 );
+  SHA1_R2( b, c, d, e, a, 34 );
+  SHA1_R2( a, b, c, d, e, 35 );
+  SHA1_R2( e, a, b, c, d, 36 );
+  SHA1_R2( d, e, a, b, c, 37 );
+  SHA1_R2( c, d, e, a, b, 38 );
+  SHA1_R2( b, c, d, e, a, 39 );
+  SHA1_R3( a, b, c, d, e, 40 );
+  SHA1_R3( e, a, b, c, d, 41 );
+  SHA1_R3( d, e, a, b, c, 42 );
+  SHA1_R3( c, d, e, a, b, 43 );
+  SHA1_R3( b, c, d, e, a, 44 );
+  SHA1_R3( a, b, c, d, e, 45 );
+  SHA1_R3( e, a, b, c, d, 46 );
+  SHA1_R3( d, e, a, b, c, 47 );
+  SHA1_R3( c, d, e, a, b, 48 );
+  SHA1_R3( b, c, d, e, a, 49 );
+  SHA1_R3( a, b, c, d, e, 50 );
+  SHA1_R3( e, a, b, c, d, 51 );
+  SHA1_R3( d, e, a, b, c, 52 );
+  SHA1_R3( c, d, e, a, b, 53 );
+  SHA1_R3( b, c, d, e, a, 54 );
+  SHA1_R3( a, b, c, d, e, 55 );
+  SHA1_R3( e, a, b, c, d, 56 );
+  SHA1_R3( d, e, a, b, c, 57 );
+  SHA1_R3( c, d, e, a, b, 58 );
+  SHA1_R3( b, c, d, e, a, 59 );
+  SHA1_R4( a, b, c, d, e, 60 );
+  SHA1_R4( e, a, b, c, d, 61 );
+  SHA1_R4( d, e, a, b, c, 62 );
+  SHA1_R4( c, d, e, a, b, 63 );
+  SHA1_R4( b, c, d, e, a, 64 );
+  SHA1_R4( a, b, c, d, e, 65 );
+  SHA1_R4( e, a, b, c, d, 66 );
+  SHA1_R4( d, e, a, b, c, 67 );
+  SHA1_R4( c, d, e, a, b, 68 );
+  SHA1_R4( b, c, d, e, a, 69 );
+  SHA1_R4( a, b, c, d, e, 70 );
+  SHA1_R4( e, a, b, c, d, 71 );
+  SHA1_R4( d, e, a, b, c, 72 );
+  SHA1_R4( c, d, e, a, b, 73 );
+  SHA1_R4( b, c, d, e, a, 74 );
+  SHA1_R4( a, b, c, d, e, 75 );
+  SHA1_R4( e, a, b, c, d, 76 );
+  SHA1_R4( d, e, a, b, c, 77 );
+  SHA1_R4( c, d, e, a, b, 78 );
+  SHA1_R4( b, c, d, e, a, 79 );
+
+  /* Add the working vars back into mDigest[] */
+  mDigest[0] += a;
+  mDigest[1] += b;
+  mDigest[2] += c;
+  mDigest[3] += d;
+  mDigest[4] += e;
 }
 
 up<HashFunction> createSHA1()
