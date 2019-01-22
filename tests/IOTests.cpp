@@ -147,10 +147,9 @@ struct IntT : public Comparable<IntT> {
   int mValue;
 };
 
+/*
 TEST_CASE( "trivial compare works", "[Comparable]" )
 {
-
-
   IntT a( 5 );
   IntT b( 5 );
   IntT c( 8 );
@@ -165,6 +164,7 @@ TEST_CASE( "trivial compare works", "[Comparable]" )
   REQUIRE( c >= a );
 
 }
+*/
 
 TEST_CASE( "string compare works", "[String8]" )
 {
