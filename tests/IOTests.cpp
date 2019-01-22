@@ -138,28 +138,44 @@ TEST_CASE( "hex encoding works", "[HexEncoding]" )
 
 }
 
-TEST_CASE( "trivial compare works", "[Comparable]") {
-    struct Int : public Comparable<Int> {
-      int compare(const Int& rhs) const {
-        return mValue - rhs.mValue;
-      }
+TEST_CASE( "trivial compare works", "[Comparable]" )
+{
+  struct Int : public Comparable<Int> {
+    int compare( const Int& rhs ) const {
+      return mValue - rhs.mValue;
+    }
 
-      Int(int v) : mValue(v) {}
-      int mValue;
-    };
+    Int( int v ) : mValue( v ) {}
+    int mValue;
+  };
 
-    Int a(5);
-    Int b(5);
-    Int c(8);
+  Int a( 5 );
+  Int b( 5 );
+  Int c( 8 );
 
-    REQUIRE( a == b );
-    REQUIRE( a <= b );
-    REQUIRE( a >= b );
-    REQUIRE( !(a != b) );
-    REQUIRE( a < c);
-    REQUIRE( a <= c);
-    REQUIRE( c > a);
-    REQUIRE( c >= a);
+  REQUIRE( a == b );
+  REQUIRE( a <= b );
+  REQUIRE( a >= b );
+  REQUIRE( !( a != b ) );
+  REQUIRE( a < c );
+  REQUIRE( a <= c );
+  REQUIRE( c > a );
+  REQUIRE( c >= a );
+
+}
+
+TEST_CASE( "string compare works", "[String8]" )
+{
+  String8 a( "alice" );
+  String8 b( "bob" );
+
+  REQUIRE( a == String8( "alice" ) );
+  REQUIRE( a <= a );
+  REQUIRE( a >= a );
+  REQUIRE( a != b );
+  REQUIRE( a < b );
+  REQUIRE( b > a );
+  REQUIRE( a == "alice" );
 
 }
 

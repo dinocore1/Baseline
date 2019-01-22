@@ -23,6 +23,7 @@
 
 #include <baseline/SharedBuffer.h>
 #include <baseline/TypeHelpers.h>
+#include <baseline/Comparable.h>
 
 namespace baseline {
 
@@ -31,7 +32,7 @@ class TextOutput;
 
 //! This is a string holding UTF-8 characters. Does not allow the value more
 // than 0x10FFFF, which is not valid unicode codepoint.
-class String8
+class String8 : public Comparable<String8>
 {
 public:
   String8();
@@ -103,13 +104,6 @@ public:
   inline  String8             operator+( const char* other ) const;
 
   inline  int                 compare( const String8& other ) const;
-
-  inline  bool                operator<( const String8& other ) const;
-  inline  bool                operator<=( const String8& other ) const;
-  inline  bool                operator==( const String8& other ) const;
-  inline  bool                operator!=( const String8& other ) const;
-  inline  bool                operator>=( const String8& other ) const;
-  inline  bool                operator>( const String8& other ) const;
 
   inline  bool                operator<( const char* other ) const;
   inline  bool                operator<=( const char* other ) const;
@@ -329,36 +323,6 @@ inline String8 String8::operator+( const char* other ) const
 inline int String8::compare( const String8& other ) const
 {
   return strcmp( mString, other.mString );
-}
-
-inline bool String8::operator<( const String8& other ) const
-{
-  return strcmp( mString, other.mString ) < 0;
-}
-
-inline bool String8::operator<=( const String8& other ) const
-{
-  return strcmp( mString, other.mString ) <= 0;
-}
-
-inline bool String8::operator==( const String8& other ) const
-{
-  return strcmp( mString, other.mString ) == 0;
-}
-
-inline bool String8::operator!=( const String8& other ) const
-{
-  return strcmp( mString, other.mString ) != 0;
-}
-
-inline bool String8::operator>=( const String8& other ) const
-{
-  return strcmp( mString, other.mString ) >= 0;
-}
-
-inline bool String8::operator>( const String8& other ) const
-{
-  return strcmp( mString, other.mString ) > 0;
 }
 
 inline bool String8::operator<( const char* other ) const

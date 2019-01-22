@@ -21,6 +21,7 @@
 
 #include <baseline/SharedBuffer.h>
 #include <baseline/TypeHelpers.h>
+#include <baseline/Comparable.h>
 
 namespace baseline {
 
@@ -28,7 +29,7 @@ class String8;
 class TextOutput;
 
 //! This is a string holding UTF-16 characters.
-class String16
+class String16 : public Comparable<String16>
 {
 public:
   String16();
@@ -82,13 +83,6 @@ public:
   status_t            remove( size_t len, size_t begin = 0 );
 
   inline  int                 compare( const String16& other ) const;
-
-  inline  bool                operator<( const String16& other ) const;
-  inline  bool                operator<=( const String16& other ) const;
-  inline  bool                operator==( const String16& other ) const;
-  inline  bool                operator!=( const String16& other ) const;
-  inline  bool                operator>=( const String16& other ) const;
-  inline  bool                operator>( const String16& other ) const;
 
   inline  bool                operator<( const char16_t* other ) const;
   inline  bool                operator<=( const char16_t* other ) const;
@@ -159,36 +153,6 @@ inline String16 String16::operator+( const String16& other ) const
 inline int String16::compare( const String16& other ) const
 {
   return strzcmp16( mString, size(), other.mString, other.size() );
-}
-
-inline bool String16::operator<( const String16& other ) const
-{
-  return strzcmp16( mString, size(), other.mString, other.size() ) < 0;
-}
-
-inline bool String16::operator<=( const String16& other ) const
-{
-  return strzcmp16( mString, size(), other.mString, other.size() ) <= 0;
-}
-
-inline bool String16::operator==( const String16& other ) const
-{
-  return strzcmp16( mString, size(), other.mString, other.size() ) == 0;
-}
-
-inline bool String16::operator!=( const String16& other ) const
-{
-  return strzcmp16( mString, size(), other.mString, other.size() ) != 0;
-}
-
-inline bool String16::operator>=( const String16& other ) const
-{
-  return strzcmp16( mString, size(), other.mString, other.size() ) >= 0;
-}
-
-inline bool String16::operator>( const String16& other ) const
-{
-  return strzcmp16( mString, size(), other.mString, other.size() ) > 0;
 }
 
 inline bool String16::operator<( const char16_t* other ) const

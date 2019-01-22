@@ -32,17 +32,17 @@ public:
    */
   virtual int compare( const T& rhs ) const = 0;
 
-  bool operator== ( const T& ) const;
-  bool operator< ( const T& ) const;
-  bool operator> ( const T& ) const;
-  bool operator<= ( const T& ) const;
-  bool operator>= ( const T& ) const;
-  bool operator!= ( const T& ) const;
+  inline bool operator== ( const T& ) const;
+  inline bool operator< ( const T& ) const;
+  inline bool operator> ( const T& ) const;
+  inline bool operator<= ( const T& ) const;
+  inline bool operator>= ( const T& ) const;
+  inline bool operator!= ( const T& ) const;
 };
 
 #define OP_IMPL(op_)                                    \
   template<typename T>                                    \
-  bool Comparable<T>::operator op_ (const T& rhs) const {   \
+  inline bool Comparable<T>::operator op_ (const T& rhs) const {   \
     return compare(rhs) op_ 0;                           \
   }
 
