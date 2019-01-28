@@ -42,6 +42,9 @@ public:
   inline
   bool full() const;
 
+  inline
+  void clear();
+
   uint32_t write( const T* buf, uint32_t size );
   void put( const T& v );
 
@@ -102,6 +105,14 @@ template<typename T>
 bool CircleBuffer<T>::full() const
 {
   return mSize == mCapacity;
+}
+
+template<typename T>
+void CircleBuffer<T>::clear()
+{
+  mSize = 0;
+  mHead = 0;
+  mTail = 0;
 }
 
 template <typename T>
