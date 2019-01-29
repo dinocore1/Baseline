@@ -8,9 +8,14 @@ cc_library {
     srcs: [
         "src/Atomic.cpp",
         "src/Condition.cpp",
+        "src/Encoding.cpp",
         "src/ExecutorService.cpp",
+        "src/Hash.cpp",
+        "src/Log.cpp",
         "src/MathUtils.cpp",
         "src/Mutex.cpp",
+        "src/SharedBuffer.cpp",
+        "src/Streams.cpp",
         "src/Thread.cpp",
     ],
 

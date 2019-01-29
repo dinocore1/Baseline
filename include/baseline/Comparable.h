@@ -24,6 +24,7 @@ template<typename T>
 class Comparable
 {
 public:
+  virtual ~Comparable() {};
 
   /**
    * @return <0 if this is less than rhs,

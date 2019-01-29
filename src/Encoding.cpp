@@ -21,6 +21,9 @@
 
 namespace baseline {
 
+BaseEncoding::~BaseEncoding()
+{}
+
 String8 BaseEncoding::encode( SharedBuffer* buf ) const
 {
   return encode( buf->data(), buf->size() );
@@ -55,7 +58,8 @@ String8 HexBaseEncoding::encode( void* buf, size_t len ) const
 
 SharedBuffer* HexBaseEncoding::decode( const String8& str ) const
 {
-
+  //TODO: implement
+  return nullptr;
 }
 
 HexBaseEncoding gHexEncoding;

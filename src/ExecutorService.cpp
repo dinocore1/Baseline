@@ -16,6 +16,7 @@
  */
 
 #include <baseline/Baseline.h>
+#include <baseline/Log.h>
 #include <baseline/String8.h>
 #include <baseline/Vector.h>
 #include <baseline/ExecutorService.h>

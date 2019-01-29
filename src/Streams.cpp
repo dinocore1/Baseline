@@ -16,10 +16,24 @@
  */
 
 #include <baseline/Baseline.h>
+#include <baseline/Log.h>
 #include <baseline/Streams.h>
 #include <baseline/SharedBuffer.h>
 
 namespace baseline {
+
+///////////// InputStream ///////////////
+
+
+InputStream::~InputStream()
+{}
+
+///////////// OutputStream ///////////////
+
+OutputStream::~OutputStream()
+{}
+
+///////////// NullOutputStream ///////////////
 
 void NullOutputStream::close()
 {
@@ -111,6 +125,11 @@ int ByteArrayInputStream::read( uint8_t* buf, size_t off, size_t len )
     return -1;
   }
 }
+
+////////////////// Others ///////////////////////
+
+IOProgress::~IOProgress()
+{}
 
 #define BUF_SIZE 1024
 

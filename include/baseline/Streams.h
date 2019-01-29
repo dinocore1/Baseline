@@ -26,7 +26,7 @@ class SharedBuffer;
 class InputStream
 {
 public:
-
+  virtual ~InputStream();
   virtual void close() = 0;
 
   /**
@@ -50,7 +50,7 @@ public:
 class OutputStream
 {
 public:
-
+  virtual ~OutputStream();
   virtual void close() = 0;
 
   /**
@@ -119,6 +119,7 @@ private:
 class IOProgress
 {
 public:
+  virtual ~IOProgress();
   virtual void onProgress( size_t bytesWritten ) = 0;
 };
 
