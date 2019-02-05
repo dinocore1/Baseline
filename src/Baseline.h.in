@@ -80,10 +80,12 @@ namespace baseline {
     typedef pthread_mutex_t mutex_t;
     typedef pthread_cond_t condition_t;
     typedef pthread_t thread_t;
+    typedef pthread_rwlock_t rwlock_t;
   #elif defined(CMAKE_USE_WIN32_THREADS_INIT)
     typedef CRITICAL_SECTION mutex_t;
     typedef CONDITION_VARIABLE condition_t;
     typedef unsigned thread_t;
+    typedef SRWLOCK rwlock_t;
   #endif
 #endif
 

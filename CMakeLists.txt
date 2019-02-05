@@ -50,6 +50,7 @@ if(BASELINE_THREAD_SUPPORT)
     src/Condition.cpp
     src/Mutex.cpp
 	  src/Thread.cpp
+    src/RWLock.cpp
   )
 endif()
 
