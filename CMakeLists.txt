@@ -8,7 +8,7 @@ option(THREAD_SUPPORT "Build with thread support" ON)
 option(BUILD_TESTS "Build unit tests" ON)
 
 set(Baseline_VERSION_MAJOR 0)
-set(Baseline_VERSION_MINOR 2)
+set(Baseline_VERSION_MINOR 3)
 set(Baseline_VERSION_PATCH 0)
 
 find_package(Threads)
