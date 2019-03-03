@@ -3,6 +3,10 @@
 
 #include <log/log.h>
 
+#ifndef ANDROID
+  #define ANDROID
+#endif
+
 //use Android's utils
 #define BASELINE_STRONGPOINTER_H_
 #define BASELINE_REFBASE_H_

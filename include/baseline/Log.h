@@ -79,11 +79,13 @@ void log( LogLevel, const char* format, ... );
 
 } // namespace
 
+#ifndef ANDROID
 #define ALOG_ASSERT(cond, ...)
 #define LOG_ALWAYS_FATAL_IF(cond, ...)
 #define ALOGW_IF(cond, ...)
 #define LOG_FATAL_IF(cond, ...)
 #define LOG_ALWAYS_FATAL(...)
+#endif
 
 
 #endif // BASELINE_LOG_H_
