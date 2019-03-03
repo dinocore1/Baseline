@@ -237,7 +237,7 @@ void ExecutorServiceImpl::start()
 
   mState = ExecutorState::Running;
 
-  for( int i = 0; i < mThreads.size(); i++ ) {
+  for( size_t i = 0; i < mThreads.size(); i++ ) {
     mThreads[i]->start();
   }
 
@@ -266,7 +266,7 @@ void ExecutorServiceImpl::shutdown()
 
   }
 
-  for( int i = 0; i < mThreads.size(); i++ ) {
+  for( size_t i = 0; i < mThreads.size(); i++ ) {
     mThreads[i]->join();
   }
 
