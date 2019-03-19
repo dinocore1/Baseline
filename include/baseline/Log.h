@@ -36,6 +36,8 @@ enum LogLevel {
 
 typedef void ( *logfunction_t )( const char* format, va_list args );
 
+extern logfunction_t gLogFunction;
+
 void stdOutLogFunction( const char* format, va_list args );
 
 void setLogLevel( LogLevel );
